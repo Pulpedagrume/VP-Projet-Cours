@@ -40,6 +40,7 @@ from demirame.mapping import (
     HR_REGLAGE_SEUIL_PHASE,
     HR_TEMPS_PROTECTION,
     NB_ADRESSES,
+    NB_REGISTRES,
     PORT,
     adresse,
 )
@@ -49,13 +50,13 @@ CYCLE_MS = 20
 
 
 def demarrer_serveur():
-    """Crée la mémoire Modbus (80 coils + 80 registres) et lance le serveur."""
+    """Crée la mémoire Modbus (80 coils + 160 registres) et lance le serveur."""
     memoire = SimDevice(
         id=0,  # 0 = répond quel que soit le numéro d'esclave demandé
         simdata=(
             [SimData(0, count=NB_ADRESSES, values=False, datatype=DataType.BITS)],     # coils
             [SimData(0, count=1, values=False, datatype=DataType.BITS)],               # discrete inputs (inutilisés)
-            [SimData(0, count=NB_ADRESSES, values=0, datatype=DataType.REGISTERS)],    # holding registers
+            [SimData(0, count=NB_REGISTRES, values=0, datatype=DataType.REGISTERS)],   # holding registers (dont zone des phaseurs)
             [SimData(0, count=1, values=0, datatype=DataType.REGISTERS)],              # input registers (inutilisés)
         ),
     )

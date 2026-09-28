@@ -98,15 +98,20 @@ temporisations : les temps relevés sont précis à un cycle près (≈ 20 ms).
 
 ## 7. Simulation du procédé (pas de 10 ms)
 
+Le modèle travaille en **phaseurs** (nombres complexes) : chaque courant et
+chaque tension a un module et un angle. Le courant résiduel est la somme
+vectorielle Io = I1 + I2 + I3. Détails et diagrammes de Fresnel :
+[`defauts_fresnel.md`](defauts_fresnel.md).
+
 On choisit sur le banc de test les phases touchées et la mise à la terre :
 
 | Défaut | Phases | Courants simulés | Io | Tension barre | Protection attendue |
 |---|---|---|---|---|---|
 | Aucun | — | charge 150 / 250 / 200 A ± 2 % | 0 à 3 A | 20 kV ± 0,1 | — |
-| Monophasé terre | 1 phase + Terre | phase touchée + 300 A | 300 A | 20 kV | Io> seule |
-| Biphasé isolé | 2 phases | Icc2 = 0,866 × Icc3 ≈ 3460 A | 0 à 3 A | creux à 60 % | I> |
-| Biphasé terre | 2 phases + Terre | Icc2 sur les 2 phases | 300 A | creux à 60 % | I> et Io> (la plus rapide) |
-| Triphasé | L1-L2-L3 | Icc3 = 4000 A | 0 à 3 A | creux à 60 % | I> |
+| Monophasé terre | 1 phase + Terre | phase touchée + 300 A (en phase avec sa tension) | 300 A | 20 kV (V touchée → 0, neutre décalé) | Io> seule |
+| Biphasé isolé | 2 phases | Icc2 = 0,866 × Icc3 ≈ 3460 A, opposés | ≈ 0 | creux sur les 2 phases | I> |
+| Biphasé terre | 2 phases + Terre | Icc2 sur les 2 phases | 300 A | creux + neutre décalé | I> et Io> (la plus rapide) |
+| Triphasé | L1-L2-L3 | Icc3 = 4000 A, retard 75° | ≈ 0 | creux à 60 % | I> |
 
 - Le neutre HTA est mis à la terre par une résistance : le courant de défaut
   à la terre est limité à 300 A. C'est pour cela qu'un défaut monophasé n'est

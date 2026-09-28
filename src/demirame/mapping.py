@@ -94,3 +94,32 @@ ORIGINE_PHASE = 1           # I>  (ANSI 51)
 ORIGINE_TERRE = 2           # Io> (ANSI 51N)
 
 ECHELLE_TENSION = 10        # valeur Modbus = kV x 10
+
+# ---------------------------------------------------------------------------
+# ZONE DES PHASEURS (holding registers 80 à 159) : pour les diagrammes de Fresnel
+# ---------------------------------------------------------------------------
+# Même découpage en blocs de 20, décalé de 80 : adresse = 80 + 20 x bloc + décalage.
+# Écrite par la simulation, lue par l'IHM. L'automate n'en a pas besoin :
+# ses protections travaillent sur les modules (valeurs efficaces).
+ZONE_PHASEURS = 80
+NB_REGISTRES = ZONE_PHASEURS + NB_ADRESSES   # 160 holding registers au total
+
+PH_ANGLE_I_L1 = 0           # angle du courant L1 (degrés, 0 à 359) - tous les blocs
+PH_ANGLE_I_L2 = 1
+PH_ANGLE_I_L3 = 2
+PH_ANGLE_IO = 3             # angle du courant résiduel Io
+# Bloc 0 : tensions simples du jeu de barres
+PH_V1 = 4                   # module V1 en kV x 100 (1155 = 11,55 kV)
+PH_V2 = 5
+PH_V3 = 6
+PH_V0 = 7                   # tension résiduelle V0 = (V1 + V2 + V3) / 3
+PH_ANGLE_V1 = 8             # angles en degrés
+PH_ANGLE_V2 = 9
+PH_ANGLE_V3 = 10
+PH_ANGLE_V0 = 11
+ECHELLE_TENSION_SIMPLE = 100   # valeur Modbus = kV x 100
+
+
+def adresse_phaseur(bloc, decalage):
+    """Adresse d'une donnée de la zone des phaseurs."""
+    return ZONE_PHASEURS + adresse(bloc, decalage)

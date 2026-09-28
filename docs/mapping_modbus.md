@@ -11,12 +11,12 @@ Côté Node-RED, la même table est recopiée dans le nœud « Table des adresse
 Chaque cellule du poste occupe un bloc de **20 adresses**, dans les coils
 comme dans les registres :
 
-| Bloc | Cellule | Adresses |
-|---|---|---|
-| 0 | Arrivée + informations générales | 0 – 19 |
-| 1 | Départ 1 | 20 – 39 |
-| 2 | Départ 2 | 40 – 59 |
-| 3 | Départ 3 | 60 – 79 |
+| Bloc | Cellule | Adresses | Phaseurs |
+|---|---|---|---|
+| 0 | Arrivée + informations générales | 0 – 19 | 80 – 99 |
+| 1 | Départ 1 | 20 – 39 | 100 – 119 |
+| 2 | Départ 2 | 40 – 59 | 120 – 139 |
+| 3 | Départ 3 | 60 – 79 | 140 – 159 |
 
 **Adresse = 20 × bloc + décalage.** Exemple : tempo I> du départ 2 =
 20 × 2 + 6 = **46**.
@@ -67,6 +67,28 @@ décalage.
 | 14 | départs | Relevé : nombre de déclenchements | — | Automate → IHM | Automate |
 | 15 | départs | **Banc de test** : défaut injecté | bits (voir ci-dessous) | Banc de test → simulation | Node-RED (l'automate ne le lit pas) |
 | 16 | départs | Relevé : protection ayant déclenché | 1 = I>, 2 = Io>, 3 = les deux | Automate → IHM | Automate |
+
+## Zone des phaseurs : holding registers 80 à 159
+
+Pour les diagrammes de Fresnel. Même découpage en blocs de 20, décalé de 80 :
+**adresse = 80 + 20 × bloc + décalage**. Écrite par la simulation, lue par
+l'IHM (nœud « Lire phaseurs 80..159 ») ; l'automate ne l'utilise pas, car
+ses protections travaillent sur les modules.
+
+| Décalage | Blocs | Variable | Unité |
+|---|---|---|---|
+| 0 | tous | Angle du courant L1 | degrés (0 – 359) |
+| 1 | tous | Angle du courant L2 | degrés |
+| 2 | tous | Angle du courant L3 | degrés |
+| 3 | tous | Angle du courant résiduel Io | degrés |
+| 4 | 0 | Module de V1 (tension simple du jeu de barres) | kV × 100 (1155 = 11,55 kV) |
+| 5 | 0 | Module de V2 | kV × 100 |
+| 6 | 0 | Module de V3 | kV × 100 |
+| 7 | 0 | Module de V0 = (V1 + V2 + V3) / 3 | kV × 100 |
+| 8 – 11 | 0 | Angles de V1, V2, V3, V0 | degrés |
+
+Les modules des courants sont ceux de la zone principale (décalages 0 à 3).
+Angles mesurés par rapport à V1 avant défaut (0°), sens trigonométrique.
 
 ## Codage des phases (décalages 13 et 15)
 

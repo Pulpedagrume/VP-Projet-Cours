@@ -216,6 +216,42 @@
         "disabled": "false"
     },
     {
+        "id": "page_fresnel",
+        "type": "ui-page",
+        "name": "Fresnel et défauts",
+        "ui": "ui_base",
+        "path": "/fresnel",
+        "icon": "vector-line",
+        "layout": "grid",
+        "theme": "ui_theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 5,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
         "id": "grp_conduite",
         "type": "ui-group",
         "name": "Schéma unifilaire et commande",
@@ -300,6 +336,20 @@
         "groupType": "default"
     },
     {
+        "id": "grp_fresnel",
+        "type": "ui-group",
+        "name": "Diagrammes de Fresnel et courants de défaut",
+        "page": "page_fresnel",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
         "id": "inj_demarrage",
         "type": "inject",
         "z": "onglet_ihm",
@@ -323,7 +373,7 @@
         "type": "function",
         "z": "onglet_ihm",
         "name": "Table des adresses",
-        "func": "// Copie de src/demirame/mapping.py : les mêmes adresses côté IHM.\n// Si vous changez mapping.py, changez aussi ce tableau.\n// Adresse = BLOC x numéro de bloc + décalage (bloc 0 = arrivée, 1 à 3 = départs)\nglobal.set('adr', {\n    BLOC: 20,\n    // Coils\n    CO_POSITION_DJ: 0,\n    CO_ORDRE_OUVERTURE: 1,\n    CO_ORDRE_FERMETURE: 2,\n    CO_ACR_OUVERTURE: 3,\n    CO_ACR_FERMETURE: 4,\n    CO_ACR_ACQUITTEMENT: 5,\n    CO_VOYANT_ALARME: 6,\n    CO_DEMARRAGE_PHASE: 10,\n    CO_DEMARRAGE_TERRE: 11,\n    CO_DECLENCHEMENT_PHASE: 12,\n    CO_DECLENCHEMENT_TERRE: 13,\n    // Holding registers\n    HR_I_L1: 0,\n    HR_IO: 3,\n    HR_TENSION_BARRE: 4,\n    HR_MOT_DE_VIE: 10,\n    HR_DUREE_CYCLE: 11,\n    HR_REGLAGE_SEUIL_PHASE: 5,\n    HR_TEMPS_PROTECTION: 10,\n    HR_DEFAUT_INJECTE: 15,\n    HR_ORIGINE_DECLENCHEMENT: 16,\n    ECHELLE_TENSION: 10,\n});\nreturn null;\n",
+        "func": "// Copie de src/demirame/mapping.py : les mêmes adresses côté IHM.\n// Si vous changez mapping.py, changez aussi ce tableau.\n// Adresse = BLOC x numéro de bloc + décalage (bloc 0 = arrivée, 1 à 3 = départs)\nglobal.set('adr', {\n    BLOC: 20,\n    // Coils\n    CO_POSITION_DJ: 0,\n    CO_ORDRE_OUVERTURE: 1,\n    CO_ORDRE_FERMETURE: 2,\n    CO_ACR_OUVERTURE: 3,\n    CO_ACR_FERMETURE: 4,\n    CO_ACR_ACQUITTEMENT: 5,\n    CO_VOYANT_ALARME: 6,\n    CO_DEMARRAGE_PHASE: 10,\n    CO_DEMARRAGE_TERRE: 11,\n    CO_DECLENCHEMENT_PHASE: 12,\n    CO_DECLENCHEMENT_TERRE: 13,\n    // Holding registers\n    HR_I_L1: 0,\n    HR_IO: 3,\n    HR_TENSION_BARRE: 4,\n    HR_MOT_DE_VIE: 10,\n    HR_DUREE_CYCLE: 11,\n    HR_REGLAGE_SEUIL_PHASE: 5,\n    HR_TEMPS_PROTECTION: 10,\n    HR_DEFAUT_INJECTE: 15,\n    HR_ORIGINE_DECLENCHEMENT: 16,\n    ECHELLE_TENSION: 10,\n    // Zone des phaseurs (registres 80 à 159) : adresse = 80 + BLOC x bloc + décalage\n    // (lue à part par le nœud « Lire phaseurs 80..159 »)\n    ZONE_PHASEURS: 80,\n    PH_ANGLE_I_L1: 0,\n    PH_ANGLE_IO: 3,\n    PH_V1: 4,\n    PH_V0: 7,\n    PH_ANGLE_V1: 8,\n    PH_ANGLE_V0: 11,\n    ECHELLE_TENSION_SIMPLE: 100,\n});\nreturn null;\n",
         "outputs": 0,
         "timeout": 0,
         "noerr": 0,
@@ -383,6 +433,54 @@
         "wires": []
     },
     {
+        "id": "lire_phaseurs",
+        "type": "modbus-read",
+        "z": "onglet_ihm",
+        "name": "Lire phaseurs 80..159",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "80",
+        "quantity": "80",
+        "rate": "250",
+        "rateUnit": "ms",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "modbus_automate",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 160,
+        "y": 190,
+        "wires": [
+            [
+                "fn_phaseurs"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fn_phaseurs",
+        "type": "function",
+        "z": "onglet_ihm",
+        "name": "Mémoriser phaseurs",
+        "func": "// Garde les derniers phaseurs lus (registres 80 à 159) ; le décodage les utilisera.\nflow.set('phaseurs', msg.payload);\nreturn null;\n",
+        "outputs": 0,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 190,
+        "wires": []
+    },
+    {
         "id": "lire_registres",
         "type": "modbus-read",
         "z": "onglet_ihm",
@@ -419,7 +517,7 @@
         "type": "function",
         "z": "onglet_ihm",
         "name": "Décodage état",
-        "func": "// Transforme les valeurs Modbus brutes en un objet \"etat\" lisible par l'IHM.\n// Sorties : 1 = état complet (pages), 2 = courbe I, 3 = courbe Io\nconst a = global.get('adr');\nconst co = flow.get('coils');\nconst hr = msg.payload;\nif (!a || !co) return null;\n\nconst adr = (bloc, decalage) => a.BLOC * bloc + decalage;\nconst t = new Date();\nconst heure = t.toLocaleTimeString('fr-FR') + '.' + String(t.getMilliseconds()).padStart(3, '0');\n\nfunction libellePhases(bits) {\n    const p = [];\n    if (bits & 1) p.push('L1');\n    if (bits & 2) p.push('L2');\n    if (bits & 4) p.push('L3');\n    if (bits & 8) p.push('Terre');\n    return p.length ? p.join('-') : '-';\n}\n\n// Lecture d'une cellule (bloc 0 = arrivée, 1 à 3 = départs)\nfunction cellule(bloc, nom) {\n    const i = adr(bloc, a.HR_I_L1);\n    const c = {\n        bloc: bloc,\n        nom: nom,\n        ferme: co[adr(bloc, a.CO_POSITION_DJ)],\n        courants: [hr[i], hr[i + 1], hr[i + 2]],\n        io: hr[adr(bloc, a.HR_IO)],\n    };\n    if (bloc > 0) {\n        c.demPhase = co[adr(bloc, a.CO_DEMARRAGE_PHASE)];\n        c.demTerre = co[adr(bloc, a.CO_DEMARRAGE_TERRE)];\n        c.declPhase = co[adr(bloc, a.CO_DECLENCHEMENT_PHASE)];\n        c.declTerre = co[adr(bloc, a.CO_DECLENCHEMENT_TERRE)];\n        const r = adr(bloc, a.HR_REGLAGE_SEUIL_PHASE);\n        c.reglages = { seuilPhase: hr[r], tempoPhase: hr[r + 1], seuilTerre: hr[r + 2], tempoTerre: hr[r + 3] };\n        const m = adr(bloc, a.HR_TEMPS_PROTECTION);\n        c.releve = {\n            tProt: hr[m], tOuv: hr[m + 1], tElim: hr[m + 2], phases: hr[m + 3], nb: hr[m + 4],\n            origine: hr[adr(bloc, a.HR_ORIGINE_DECLENCHEMENT)],\n        };\n        c.defautInjecte = hr[adr(bloc, a.HR_DEFAUT_INJECTE)];\n    }\n    return c;\n}\n\nconst etat = {\n    heure: heure,\n    tension: hr[adr(0, a.HR_TENSION_BARRE)] / a.ECHELLE_TENSION,\n    alarme: co[adr(0, a.CO_VOYANT_ALARME)],\n    dureeCycle: hr[adr(0, a.HR_DUREE_CYCLE)],\n    arrivee: cellule(0, 'Arrivée'),\n    departs: [1, 2, 3].map(b => cellule(b, 'Départ ' + b)),\n};\n\n// Mot de vie : si le compteur de l'automate ne bouge plus, son cycle est arrêté.\nconst vie = hr[adr(0, a.HR_MOT_DE_VIE)];\netat.automateEnLigne = vie !== context.get('vie');\ncontext.set('vie', vie);\n\n// ---------------- Journal des événements (changements d'état) ----------------\nconst journal = flow.get('journal') || [];\nfunction noter(texte, niveau) { journal.unshift({ heure: heure, texte: texte, niveau: niveau }); }\n\nconst avant = context.get('avant');\nif (avant) {\n    [etat.arrivee].concat(etat.departs).forEach((c, i) => {\n        // Notés dans l'ordre chronologique : démarrage, déclenchement, puis manoeuvre du DJ\n        const p = i === 0 ? avant.arrivee : avant.departs[i - 1];\n        if (i > 0) {\n            if (c.demPhase && !p.demPhase) noter(c.nom + ' : démarrage I>', 'alerte');\n            if (c.demTerre && !p.demTerre) noter(c.nom + ' : démarrage Io>', 'alerte');\n            if (c.declPhase && !p.declPhase) noter(c.nom + ' : DÉCLENCHEMENT I>', 'alarme');\n            if (c.declTerre && !p.declTerre) noter(c.nom + ' : DÉCLENCHEMENT Io>', 'alarme');\n        }\n        if (c.ferme !== p.ferme) noter(c.nom + ' : disjoncteur ' + (c.ferme ? 'FERMÉ' : 'OUVERT'), 'info');\n        if (i === 0) return;\n        if (!c.declPhase && !c.declTerre && (p.declPhase || p.declTerre)) noter(c.nom + ' : alarmes acquittées', 'info');\n        if (c.defautInjecte !== p.defautInjecte) {\n            noter(c.nom + ' : banc de test, ' + (c.defautInjecte ? 'défaut ' + libellePhases(c.defautInjecte) + ' appliqué' : 'défaut supprimé'), 'test');\n        }\n        const r = c.reglages, q = p.reglages;\n        if (r.seuilPhase !== q.seuilPhase || r.tempoPhase !== q.tempoPhase || r.seuilTerre !== q.seuilTerre || r.tempoTerre !== q.tempoTerre) {\n            noter(c.nom + ' : nouveaux réglages I> ' + r.seuilPhase + ' A / ' + r.tempoPhase + ' ms, Io> ' + r.seuilTerre + ' A / ' + r.tempoTerre + ' ms', 'info');\n        }\n    });\n}\njournal.splice(200);  // on garde les 200 derniers événements\nflow.set('journal', journal);\n\n// ---------------- Historique des relevés de temporisation ----------------\n// Un enregistrement par déclenchement, dès que le DJ est ouvert (t élimination connu).\nconst historique = flow.get('historique') || [];\nconst dejaNotes = context.get('dejaNotes') || [null, null, null];\netat.departs.forEach((c, i) => {\n    const r = c.releve;\n    if (dejaNotes[i] === null) { dejaNotes[i] = r.nb; return; }  // au démarrage de l'IHM\n    if (r.nb !== dejaNotes[i] && r.tElim > 0) {\n        const parPhase = (r.origine & 1) !== 0;\n        const reglage = parPhase ? c.reglages.tempoPhase : c.reglages.tempoTerre;\n        historique.unshift({\n            heure: heure,\n            depart: c.nom,\n            phases: libellePhases(r.phases),\n            protection: ['-', 'I>', 'Io>', 'I> et Io>'][r.origine] || '-',\n            reglage: reglage,\n            tProt: r.tProt,\n            ecart: r.tProt - reglage,\n            tOuv: r.tOuv,\n            tElim: r.tElim,\n        });\n        noter(c.nom + ' : relevé t protection ' + r.tProt + ' ms, t ouverture DJ ' + r.tOuv + ' ms, t élimination ' + r.tElim + ' ms', 'info');\n        dejaNotes[i] = r.nb;\n    }\n});\ncontext.set('dejaNotes', dejaNotes);\nflow.set('historique', historique);\n\ncontext.set('avant', JSON.parse(JSON.stringify(etat)));\netat.journal = journal.slice(0, 100);\netat.historique = historique;\n\n// Courbes : un message par départ (topic = nom de la courbe)\nconst courbeI = etat.departs.map(d => ({ topic: d.nom, payload: Math.max(...d.courants) }));\nconst courbeIo = etat.departs.map(d => ({ topic: d.nom, payload: d.io }));\n\nreturn [{ payload: etat }, courbeI, courbeIo];\n",
+        "func": "// Transforme les valeurs Modbus brutes en un objet \"etat\" lisible par l'IHM.\n// Sorties : 1 = état complet (pages), 2 = courbe I, 3 = courbe Io\nconst a = global.get('adr');\nconst co = flow.get('coils');\nconst hr = msg.payload;\nconst ph = flow.get('phaseurs') || [];\nif (!a || !co) return null;\n\nconst adr = (bloc, decalage) => a.BLOC * bloc + decalage;\nconst t = new Date();\nconst heure = t.toLocaleTimeString('fr-FR') + '.' + String(t.getMilliseconds()).padStart(3, '0');\n\nfunction libellePhases(bits) {\n    const p = [];\n    if (bits & 1) p.push('L1');\n    if (bits & 2) p.push('L2');\n    if (bits & 4) p.push('L3');\n    if (bits & 8) p.push('Terre');\n    return p.length ? p.join('-') : '-';\n}\n\n// Lecture d'une cellule (bloc 0 = arrivée, 1 à 3 = départs)\nfunction cellule(bloc, nom) {\n    const i = adr(bloc, a.HR_I_L1);\n    const c = {\n        bloc: bloc,\n        nom: nom,\n        ferme: co[adr(bloc, a.CO_POSITION_DJ)],\n        courants: [hr[i], hr[i + 1], hr[i + 2]],\n        io: hr[adr(bloc, a.HR_IO)],\n    };\n    // Angles (degrés) pour les diagrammes de Fresnel.\n    // La lecture des phaseurs commence à l'adresse 80 : ph[0] = adresse 80.\n    const g = adr(bloc, a.PH_ANGLE_I_L1);\n    c.anglesI = [ph[g] || 0, ph[g + 1] || 0, ph[g + 2] || 0];\n    c.angleIo = ph[adr(bloc, a.PH_ANGLE_IO)] || 0;\n    if (bloc > 0) {\n        c.demPhase = co[adr(bloc, a.CO_DEMARRAGE_PHASE)];\n        c.demTerre = co[adr(bloc, a.CO_DEMARRAGE_TERRE)];\n        c.declPhase = co[adr(bloc, a.CO_DECLENCHEMENT_PHASE)];\n        c.declTerre = co[adr(bloc, a.CO_DECLENCHEMENT_TERRE)];\n        const r = adr(bloc, a.HR_REGLAGE_SEUIL_PHASE);\n        c.reglages = { seuilPhase: hr[r], tempoPhase: hr[r + 1], seuilTerre: hr[r + 2], tempoTerre: hr[r + 3] };\n        const m = adr(bloc, a.HR_TEMPS_PROTECTION);\n        c.releve = {\n            tProt: hr[m], tOuv: hr[m + 1], tElim: hr[m + 2], phases: hr[m + 3], nb: hr[m + 4],\n            origine: hr[adr(bloc, a.HR_ORIGINE_DECLENCHEMENT)],\n        };\n        c.defautInjecte = hr[adr(bloc, a.HR_DEFAUT_INJECTE)];\n    }\n    return c;\n}\n\nconst etat = {\n    heure: heure,\n    tension: hr[adr(0, a.HR_TENSION_BARRE)] / a.ECHELLE_TENSION,\n    alarme: co[adr(0, a.CO_VOYANT_ALARME)],\n    dureeCycle: hr[adr(0, a.HR_DUREE_CYCLE)],\n    arrivee: cellule(0, 'Arrivée'),\n    departs: [1, 2, 3].map(b => cellule(b, 'Départ ' + b)),\n};\n\n// Tensions simples du jeu de barres (module en kV, angle en degrés) et V0\nconst zv = adr(0, a.PH_V1);        // indices dans ph (ph[0] = adresse 80)\nconst za = adr(0, a.PH_ANGLE_V1);\netat.tensionsSimples = [0, 1, 2, 3].map(k => ({\n    m: (ph[zv + k] || 0) / a.ECHELLE_TENSION_SIMPLE,\n    a: ph[za + k] || 0,\n}));\n\n// Mot de vie : si le compteur de l'automate ne bouge plus, son cycle est arrêté.\nconst vie = hr[adr(0, a.HR_MOT_DE_VIE)];\netat.automateEnLigne = vie !== context.get('vie');\ncontext.set('vie', vie);\n\n// ---------------- Journal des événements (changements d'état) ----------------\nconst journal = flow.get('journal') || [];\nfunction noter(texte, niveau) { journal.unshift({ heure: heure, texte: texte, niveau: niveau }); }\n\nconst avant = context.get('avant');\nif (avant) {\n    [etat.arrivee].concat(etat.departs).forEach((c, i) => {\n        // Notés dans l'ordre chronologique : démarrage, déclenchement, puis manoeuvre du DJ\n        const p = i === 0 ? avant.arrivee : avant.departs[i - 1];\n        if (i > 0) {\n            if (c.demPhase && !p.demPhase) noter(c.nom + ' : démarrage I>', 'alerte');\n            if (c.demTerre && !p.demTerre) noter(c.nom + ' : démarrage Io>', 'alerte');\n            if (c.declPhase && !p.declPhase) noter(c.nom + ' : DÉCLENCHEMENT I>', 'alarme');\n            if (c.declTerre && !p.declTerre) noter(c.nom + ' : DÉCLENCHEMENT Io>', 'alarme');\n        }\n        if (c.ferme !== p.ferme) noter(c.nom + ' : disjoncteur ' + (c.ferme ? 'FERMÉ' : 'OUVERT'), 'info');\n        if (i === 0) return;\n        if (!c.declPhase && !c.declTerre && (p.declPhase || p.declTerre)) noter(c.nom + ' : alarmes acquittées', 'info');\n        if (c.defautInjecte !== p.defautInjecte) {\n            noter(c.nom + ' : banc de test, ' + (c.defautInjecte ? 'défaut ' + libellePhases(c.defautInjecte) + ' appliqué' : 'défaut supprimé'), 'test');\n        }\n        const r = c.reglages, q = p.reglages;\n        if (r.seuilPhase !== q.seuilPhase || r.tempoPhase !== q.tempoPhase || r.seuilTerre !== q.seuilTerre || r.tempoTerre !== q.tempoTerre) {\n            noter(c.nom + ' : nouveaux réglages I> ' + r.seuilPhase + ' A / ' + r.tempoPhase + ' ms, Io> ' + r.seuilTerre + ' A / ' + r.tempoTerre + ' ms', 'info');\n        }\n    });\n}\njournal.splice(200);  // on garde les 200 derniers événements\nflow.set('journal', journal);\n\n// ---------------- Historique des relevés de temporisation ----------------\n// Un enregistrement par déclenchement, dès que le DJ est ouvert (t élimination connu).\nconst historique = flow.get('historique') || [];\nconst dejaNotes = context.get('dejaNotes') || [null, null, null];\netat.departs.forEach((c, i) => {\n    const r = c.releve;\n    if (dejaNotes[i] === null) { dejaNotes[i] = r.nb; return; }  // au démarrage de l'IHM\n    if (r.nb !== dejaNotes[i] && r.tElim > 0) {\n        const parPhase = (r.origine & 1) !== 0;\n        const reglage = parPhase ? c.reglages.tempoPhase : c.reglages.tempoTerre;\n        historique.unshift({\n            heure: heure,\n            depart: c.nom,\n            phases: libellePhases(r.phases),\n            protection: ['-', 'I>', 'Io>', 'I> et Io>'][r.origine] || '-',\n            reglage: reglage,\n            tProt: r.tProt,\n            ecart: r.tProt - reglage,\n            tOuv: r.tOuv,\n            tElim: r.tElim,\n        });\n        noter(c.nom + ' : relevé t protection ' + r.tProt + ' ms, t ouverture DJ ' + r.tOuv + ' ms, t élimination ' + r.tElim + ' ms', 'info');\n        dejaNotes[i] = r.nb;\n    }\n});\ncontext.set('dejaNotes', dejaNotes);\nflow.set('historique', historique);\n\ncontext.set('avant', JSON.parse(JSON.stringify(etat)));\netat.journal = journal.slice(0, 100);\netat.historique = historique;\n\n// Courbes : un message par départ (topic = nom de la courbe)\nconst courbeI = etat.departs.map(d => ({ topic: d.nom, payload: Math.max(...d.courants) }));\nconst courbeIo = etat.departs.map(d => ({ topic: d.nom, payload: d.io }));\n\nreturn [{ payload: etat }, courbeI, courbeIo];\n",
         "outputs": 3,
         "timeout": 0,
         "noerr": 0,
@@ -434,7 +532,8 @@
                 "tpl_journal",
                 "tpl_releve",
                 "tpl_reglages",
-                "tpl_banc"
+                "tpl_banc",
+                "tpl_fresnel"
             ],
             [
                 "courbe_i"
@@ -504,15 +603,15 @@
         "removeOlderUnit": "60",
         "removeOlderPoints": "",
         "colors": [
-            "#1f77b4",
-            "#ff7f0e",
-            "#2ca02c",
-            "#d62728",
-            "#9467bd",
-            "#8c564b",
-            "#e377c2",
-            "#7f7f7f",
-            "#bcbd22"
+            "#2a78d6",
+            "#eb6834",
+            "#1baf7a",
+            "#eda100",
+            "#e87ba4",
+            "#008300",
+            "#4a3aa7",
+            "#e34948",
+            "#7f7f7f"
         ],
         "textColor": [
             "#666666"
@@ -566,15 +665,15 @@
         "removeOlderUnit": "60",
         "removeOlderPoints": "",
         "colors": [
-            "#1f77b4",
-            "#ff7f0e",
-            "#2ca02c",
-            "#d62728",
-            "#9467bd",
-            "#8c564b",
-            "#e377c2",
-            "#7f7f7f",
-            "#bcbd22"
+            "#2a78d6",
+            "#eb6834",
+            "#1baf7a",
+            "#eda100",
+            "#e87ba4",
+            "#008300",
+            "#4a3aa7",
+            "#e34948",
+            "#7f7f7f"
         ],
         "textColor": [
             "#666666"
@@ -692,6 +791,32 @@
         "className": "",
         "x": 650,
         "y": 320,
+        "wires": [
+            [
+                "fn_commandes"
+            ]
+        ]
+    },
+    {
+        "id": "tpl_fresnel",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_fresnel",
+        "page": "",
+        "ui": "",
+        "name": "Fresnel et défauts",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div class=\"fresnel-page\">\n    <!-- Pointes de flèches, partagées par tous les diagrammes -->\n    <svg width=\"0\" height=\"0\" class=\"defs\">\n      <defs>\n        <marker v-for=\"c in couleursFleches\" :key=\"c\" :id=\"'fl-' + c.slice(1)\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\"\n                markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\">\n          <path d=\"M0,0 L10,5 L0,10 z\" :fill=\"c\" />\n        </marker>\n      </defs>\n    </svg>\n\n    <!-- ===================== MESURES EN TEMPS RÉEL ===================== -->\n    <div v-if=\"etat\">\n      <div class=\"entete\">\n        <div class=\"titre\">Mesures en temps réel</div>\n        <div class=\"onglets\">\n          <button v-for=\"(c, i) in cellules\" :key=\"i\" :class=\"['onglet', { on: choix === i }]\" @click=\"choix = i\">{{ c.nom }}</button>\n        </div>\n      </div>\n      <div class=\"legende\">\n        <span v-for=\"p in 3\" :key=\"p\"><i :style=\"{ background: COULEURS[p - 1] }\"></i>L{{ p }}</span>\n        <span><i class=\"pointille\"></i>résiduel (Io, V0)</span>\n        <span class=\"aide\">traits fins : tensions simples du jeu de barres · traits épais : courants de la cellule</span>\n      </div>\n\n      <div class=\"rangee\">\n        <div class=\"bloc\">\n          <svg viewBox=\"0 0 340 340\" class=\"diagramme\">\n            <circle cx=\"170\" cy=\"170\" r=\"140\" class=\"cercle\" />\n            <circle cx=\"170\" cy=\"170\" r=\"70\" class=\"cercle demi\" />\n            <line x1=\"20\" y1=\"170\" x2=\"320\" y2=\"170\" class=\"axe\" />\n            <line x1=\"170\" y1=\"20\" x2=\"170\" y2=\"320\" class=\"axe\" />\n            <g v-for=\"v in vecteurs(direct, 140, 170, 170)\" :key=\"v.nom\">\n              <line x1=\"170\" y1=\"170\" :x2=\"v.x\" :y2=\"v.y\" :stroke=\"v.couleur\" :stroke-width=\"v.epaisseur\"\n                    :stroke-dasharray=\"v.tirets\" :marker-end=\"'url(#fl-' + v.couleur.slice(1) + ')'\" />\n              <text v-if=\"v.etiquette\" :x=\"v.lx\" :y=\"v.ly\" text-anchor=\"middle\" class=\"nomv\">{{ v.nom }}</text>\n            </g>\n          </svg>\n          <div class=\"aide centre\">Cercle : 20 kV pour les tensions, {{ echelleCourant(direct) }} A pour les courants</div>\n        </div>\n\n        <div class=\"bloc\">\n          <svg viewBox=\"0 0 440 300\" class=\"ondes\">\n            <g v-for=\"(o, k) in [{ titre: 'Tensions simples v(t)', series: seriesTensions, unite: 'kV', y: 18 }, { titre: 'Courants i(t)', series: seriesCourants, unite: 'A', y: 170 }]\" :key=\"k\">\n              <text x=\"40\" :y=\"o.y - 6\" class=\"titre-courbe\">{{ o.titre }}</text>\n              <rect x=\"40\" :y=\"o.y\" width=\"370\" height=\"110\" class=\"cadre\" />\n              <line x1=\"40\" :y1=\"o.y + 55\" x2=\"410\" :y2=\"o.y + 55\" class=\"axe\" />\n              <text x=\"36\" :y=\"o.y + 10\" text-anchor=\"end\" class=\"petit\">{{ crete(o.series).toFixed(o.unite === 'kV' ? 1 : 0) }}</text>\n              <text x=\"36\" :y=\"o.y + 22\" text-anchor=\"end\" class=\"petit\">{{ o.unite }}</text>\n              <polyline v-for=\"(s, j) in o.series\" :key=\"j\" :points=\"courbe(s, crete(o.series), 40, o.y, 370, 110)\"\n                        fill=\"none\" :stroke=\"s.couleur\" stroke-width=\"2\" :stroke-dasharray=\"s.tirets\" />\n              <text v-for=\"t in [0, 10, 20, 30, 40]\" :key=\"t\" :x=\"40 + t / 40 * 370\" :y=\"o.y + 124\" text-anchor=\"middle\" class=\"petit\">{{ t }} ms</text>\n            </g>\n          </svg>\n          <div class=\"aide centre\">Formes d'onde reconstruites à partir des phaseurs mesurés (2 périodes à 50 Hz)</div>\n        </div>\n\n        <div class=\"bloc\">\n          <table class=\"valeurs\">\n            <thead><tr><th></th><th>Module</th><th>Angle</th></tr></thead>\n            <tbody>\n              <tr v-for=\"(v, k) in direct.tensions\" :key=\"'v' + k\"><td><i :style=\"{ background: COULEURS[k] }\"></i>V{{ k + 1 }}</td><td>{{ v.m.toFixed(2) }} kV</td><td>{{ v.a }}°</td></tr>\n              <tr><td><i class=\"gris\"></i>V0</td><td>{{ direct.v0.m.toFixed(2) }} kV</td><td>{{ direct.v0.a }}°</td></tr>\n              <tr v-for=\"(c, k) in direct.courants\" :key=\"'i' + k\"><td><i :style=\"{ background: COULEURS[k] }\"></i>I{{ k + 1 }}</td><td>{{ c.m }} A</td><td>{{ c.a }}°</td></tr>\n              <tr><td><i class=\"noir\"></i>Io</td><td>{{ direct.io.m }} A</td><td>{{ direct.io.a }}°</td></tr>\n            </tbody>\n          </table>\n          <div class=\"aide\">Angles mesurés par rapport à V1 avant défaut (0°), sens trigonométrique.</div>\n        </div>\n      </div>\n    </div>\n    <div v-else class=\"aide\">En attente des données de l'automate...</div>\n\n    <!-- ===================== FICHES THÉORIQUES ===================== -->\n    <div class=\"titre theorie\">Les défauts francs en théorie</div>\n    <div class=\"aide\">Diagrammes calculés avec le même modèle que la simulation (départ 1, charge 150 A, sans bruit).</div>\n    <div class=\"cartes\">\n      <div v-for=\"d in THEORIE\" :key=\"d.cle\" class=\"carte\">\n        <div class=\"titre-carte\">{{ d.titre }}</div>\n        <svg viewBox=\"0 0 240 240\" class=\"mini\">\n          <circle cx=\"120\" cy=\"120\" r=\"95\" class=\"cercle\" />\n          <line x1=\"15\" y1=\"120\" x2=\"225\" y2=\"120\" class=\"axe\" />\n          <line x1=\"120\" y1=\"15\" x2=\"120\" y2=\"225\" class=\"axe\" />\n          <g v-for=\"v in vecteurs(d, 95, 120, 120)\" :key=\"v.nom\">\n            <line x1=\"120\" y1=\"120\" :x2=\"v.x\" :y2=\"v.y\" :stroke=\"v.couleur\" :stroke-width=\"v.epaisseur * 0.8\"\n                  :stroke-dasharray=\"v.tirets\" :marker-end=\"'url(#fl-' + v.couleur.slice(1) + ')'\" />\n            <text v-if=\"v.etiquette\" :x=\"v.lx\" :y=\"v.ly\" text-anchor=\"middle\" class=\"nomv petit-nom\">{{ v.nom }}</text>\n          </g>\n        </svg>\n        <div class=\"chiffres\">\n          <span>I max = <b>{{ Math.max(...d.courants.map(c => c.m)) }} A</b></span>\n          <span>Io = <b>{{ d.io.m }} A</b></span>\n          <span>V0 = <b>{{ d.v0.m.toFixed(1) }} kV</b></span>\n        </div>\n        <div class=\"explication\" v-html=\"d.texte\"></div>\n        <div class=\"protection\">Protection sollicitée : <b>{{ d.protection }}</b></div>\n        <v-btn v-if=\"d.bits\" size=\"small\" variant=\"outlined\" color=\"red-darken-2\" @click=\"appliquer(d.bits)\">Appliquer sur le départ 1</v-btn>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      choix: 1,\n      COULEURS: ['#2a78d6', '#eb6834', '#1baf7a'],\n      NOIR: '#1f2328',\n      GRIS: '#57606a',\n      THEORIE: [{\"cle\": \"normal\", \"titre\": \"Fonctionnement normal\", \"protection\": \"—\", \"texte\": \"Système triphasé direct équilibré : trois tensions de 11,55 kV décalées de 120°. Les courants de charge sont en retard d'environ 26° (cos φ = 0,9). Leur somme est nulle : <b>Io ≈ 0</b> et <b>V0 ≈ 0</b>.\", \"bits\": 0, \"tensions\": [{\"m\": 11.55, \"a\": 0}, {\"m\": 11.55, \"a\": 240}, {\"m\": 11.55, \"a\": 120}], \"v0\": {\"m\": 0.0, \"a\": 0}, \"courants\": [{\"m\": 150, \"a\": 334}, {\"m\": 150, \"a\": 214}, {\"m\": 150, \"a\": 94}], \"io\": {\"m\": 0, \"a\": 0}}, {\"cle\": \"monophase_terre\", \"titre\": \"Monophasé L1-terre\", \"protection\": \"Io> (51N) seule\", \"texte\": \"L1 touche la terre. Le neutre, relié à la terre par une résistance, se décale : <b>V1 → 0</b>, V2 et V3 montent à 20 kV (la tension composée), <b>V0 = −V1</b>. Le courant de défaut est limité par la résistance de neutre (Io = V/R<sub>N</sub> ≈ 300 A), en phase avec V1 et en <b>opposition avec V0</b>. I1 reste sous le seuil I> : seul le courant résiduel révèle le défaut.\", \"bits\": 9, \"tensions\": [{\"m\": 0.0, \"a\": 0}, {\"m\": 20.0, \"a\": 210}, {\"m\": 20.0, \"a\": 150}], \"v0\": {\"m\": 11.55, \"a\": 180}, \"courants\": [{\"m\": 440, \"a\": 351}, {\"m\": 150, \"a\": 214}, {\"m\": 150, \"a\": 94}], \"io\": {\"m\": 300, \"a\": 0}}, {\"cle\": \"biphase_isole\", \"titre\": \"Biphasé isolé L2-L3\", \"protection\": \"I> (51)\", \"texte\": \"L2 et L3 sont en court-circuit. <b>Icc2 = √3/2 × Icc3 ≈ 3460 A</b>. Les courants de défaut sont <b>opposés</b> (I3 ≈ −I2), en retard de 75° sur U23. Aucun chemin vers la terre : <b>Io ≈ 0, V0 ≈ 0</b>. Les tensions V2 et V3 se rapprochent l'une de l'autre.\", \"bits\": 6, \"tensions\": [{\"m\": 11.55, \"a\": 0}, {\"m\": 8.33, \"a\": 226}, {\"m\": 8.33, \"a\": 134}], \"v0\": {\"m\": 0.0, \"a\": 0}, \"courants\": [{\"m\": 150, \"a\": 334}, {\"m\": 3606, \"a\": 196}, {\"m\": 3495, \"a\": 17}], \"io\": {\"m\": 0, \"a\": 0}}, {\"cle\": \"biphase_terre\", \"titre\": \"Biphasé L2-L3-terre\", \"protection\": \"I> et Io> (la plus rapide)\", \"texte\": \"Comme le biphasé isolé, avec en plus un courant vers la terre (300 A) partagé entre L2 et L3 : <b>Io et V0 apparaissent</b>, en opposition. Les deux protections démarrent ; c'est la temporisation la plus courte qui déclenche.\", \"bits\": 14, \"tensions\": [{\"m\": 13.86, \"a\": 0}, {\"m\": 6.93, \"a\": 240}, {\"m\": 6.93, \"a\": 120}], \"v0\": {\"m\": 2.31, \"a\": 0}, \"courants\": [{\"m\": 150, \"a\": 334}, {\"m\": 3751, \"a\": 195}, {\"m\": 3352, \"a\": 18}], \"io\": {\"m\": 300, \"a\": 180}}, {\"cle\": \"triphase\", \"titre\": \"Triphasé\", \"protection\": \"I> (51)\", \"texte\": \"Défaut symétrique : trois courants égaux <b>Icc3 = U / (√3 · Zcc) = 4000 A</b>, en retard de 75° sur leur tension. Le système reste équilibré : <b>Io = 0, V0 = 0</b>. Creux de tension équilibré sur le jeu de barres.\", \"bits\": 7, \"tensions\": [{\"m\": 6.93, \"a\": 0}, {\"m\": 6.93, \"a\": 240}, {\"m\": 6.93, \"a\": 120}], \"v0\": {\"m\": 0.0, \"a\": 0}, \"courants\": [{\"m\": 4000, \"a\": 285}, {\"m\": 4000, \"a\": 165}, {\"m\": 4000, \"a\": 45}], \"io\": {\"m\": 0, \"a\": 0}}],\n    }\n  },\n  computed: {\n    etat() { return this.msg && this.msg.payload },\n    couleursFleches() { return this.COULEURS.concat([this.NOIR, this.GRIS]) },\n    cellules() { return [this.etat.arrivee].concat(this.etat.departs) },\n    // Phaseurs de la cellule choisie, au même format que les fiches théoriques\n    direct() {\n      const c = this.cellules[this.choix]\n      const t = this.etat.tensionsSimples\n      return {\n        tensions: t.slice(0, 3),\n        v0: t[3],\n        courants: c.courants.map((m, p) => ({ m: m, a: c.anglesI[p] })),\n        io: { m: c.io, a: c.angleIo },\n      }\n    },\n    seriesTensions() {\n      return this.direct.tensions.map((v, p) => ({ m: v.m, a: v.a, couleur: this.COULEURS[p], tirets: '' }))\n        .concat([{ m: this.direct.v0.m, a: this.direct.v0.a, couleur: this.GRIS, tirets: '5 3' }])\n    },\n    seriesCourants() {\n      return this.direct.courants.map((c, p) => ({ m: c.m, a: c.a, couleur: this.COULEURS[p], tirets: '' }))\n        .concat([{ m: this.direct.io.m, a: this.direct.io.a, couleur: this.NOIR, tirets: '5 3' }])\n    }\n  },\n  methods: {\n    echelleCourant(ph) {\n      return Math.max(1, ...ph.courants.map(c => c.m), ph.io.m)\n    },\n    // Vecteurs de Fresnel : axe réel vers la droite, axe imaginaire vers le haut\n    vecteurs(ph, rayon, cx, cy) {\n      const liste = []\n      const echelleV = rayon / 20                       // 20 kV = rayon du cercle\n      const echelleI = 0.92 * rayon / this.echelleCourant(ph)\n      const ajouter = (z, echelle, couleur, epaisseur, tirets, nom) => {\n        const l = z.m * echelle\n        if (l < 2) return\n        const r = z.a * Math.PI / 180\n        liste.push({\n          nom: nom, couleur: couleur, epaisseur: epaisseur, tirets: tirets,\n          x: cx + l * Math.cos(r), y: cy - l * Math.sin(r),\n          lx: cx + (l + 13) * Math.cos(r), ly: cy - (l + 13) * Math.sin(r) + 4,\n          etiquette: l > 22,                            // petits vecteurs : voir le tableau\n        })\n      }\n      ph.tensions.forEach((v, p) => ajouter(v, echelleV, this.COULEURS[p], 1.5, '', 'V' + (p + 1)))\n      ajouter(ph.v0, echelleV, this.GRIS, 1.5, '6 4', 'V0')\n      ph.courants.forEach((c, p) => ajouter(c, echelleI, this.COULEURS[p], 3.5, '', 'I' + (p + 1)))\n      ajouter(ph.io, echelleI, this.NOIR, 3, '6 4', 'Io')\n      return liste\n    },\n    crete(series) {\n      return Math.sqrt(2) * Math.max(1e-6, ...series.map(s => s.m))\n    },\n    // i(t) = √2 · I · sin(ωt + φ), sur 40 ms\n    courbe(s, crete, x0, y0, largeur, hauteur) {\n      const points = []\n      for (let k = 0; k <= 200; k++) {\n        const t = k / 200 * 0.040\n        const v = Math.sqrt(2) * s.m * Math.sin(2 * Math.PI * 50 * t + s.a * Math.PI / 180)\n        points.push((x0 + k / 200 * largeur).toFixed(1) + ',' + (y0 + hauteur / 2 - v / crete * (hauteur / 2 - 4)).toFixed(1))\n      }\n      return points.join(' ')\n    },\n    appliquer(bits) {\n      this.send({ payload: { commande: 'defaut', bloc: 1, valeur: bits } })\n    }\n  }\n}\n</script>\n\n<style scoped>\n.fresnel-page { font-family: 'Segoe UI', Roboto, Arial, sans-serif; color: #1f2328; }\n.defs { position: absolute; }\n.entete { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }\n.titre { font-weight: 600; font-size: 14px; margin: 6px 0; color: #37474f; text-transform: uppercase; letter-spacing: 0.03em; }\n.titre.theorie { margin-top: 18px; }\n.onglets { display: flex; gap: 4px; }\n.onglet { padding: 4px 12px; border: 1px solid #90a4ae; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; }\n.onglet.on { background: #37474f; color: #fff; border-color: #37474f; }\n.legende { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; font-size: 12px; margin: 6px 0 8px; }\n.legende i, .valeurs i { display: inline-block; width: 14px; height: 4px; margin-right: 5px; vertical-align: middle; }\n.legende i.pointille { background: repeating-linear-gradient(90deg, #1f2328 0 5px, transparent 5px 8px); }\n.valeurs i { width: 10px; height: 10px; }\ni.noir { background: #1f2328; }\ni.gris { background: #57606a; }\n.aide { font-size: 12px; color: #57606a; }\n.centre { text-align: center; }\n.rangee { display: flex; flex-wrap: wrap; gap: 12px; }\n.bloc { flex: 1 1 300px; border: 1px solid #d0d7de; border-radius: 4px; padding: 8px; background: #fbfcfd; }\n.diagramme { width: 100%; max-width: 360px; display: block; margin: 0 auto; }\n.ondes { width: 100%; display: block; }\n.cercle { fill: none; stroke: #d0d7de; }\n.cercle.demi { stroke-dasharray: 2 3; }\n.axe { stroke: #d0d7de; }\n.cadre { fill: none; stroke: #d0d7de; }\n.nomv { font-size: 13px; font-weight: 600; fill: #1f2328; }\n.petit-nom { font-size: 12px; }\n.titre-courbe { font-size: 13px; font-weight: 600; fill: #1f2328; }\n.petit { font-size: 11px; fill: #57606a; }\n.valeurs { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 6px; }\n.valeurs th { text-align: left; background: #37474f; color: #fff; padding: 4px 8px; font-weight: 600; }\n.valeurs td { padding: 3px 8px; border-bottom: 1px solid #e6e9ed; font-family: Consolas, monospace; }\n.cartes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }\n.carte { flex: 1 1 260px; max-width: 420px; border: 1px solid #d0d7de; border-radius: 4px; padding: 10px; background: #fff; display: flex; flex-direction: column; gap: 6px; }\n.titre-carte { font-weight: 600; font-size: 15px; }\n.mini { width: 100%; max-width: 240px; align-self: center; }\n.chiffres { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; }\n.explication { font-size: 13px; line-height: 1.45; }\n.protection { font-size: 13px; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 660,
+        "y": 440,
         "wires": [
             [
                 "fn_commandes"

@@ -11,6 +11,8 @@ source** (1 arrivée + 3 départs).
 Documentation :
 - [`docs/specification.md`](docs/specification.md) : ce que fait le système
 - [`docs/mapping_modbus.md`](docs/mapping_modbus.md) : table des adresses Modbus
+- [`docs/defauts_fresnel.md`](docs/defauts_fresnel.md) : courants de défaut et diagrammes de Fresnel
+  (figures régénérables avec `uv run python docs/figures/generer_figures.py`)
 
 ## Architecture
 
@@ -60,6 +62,7 @@ Puis ouvrir **http://localhost:1880/dashboard** :
 | **Relevé des temporisations** | Pour chaque départ : phases vues, protection, réglage, t protection, écart, t ouverture DJ, t élimination ; historique exportable en CSV |
 | **Réglages protections** | Seuils et temporisations I> / Io> de chaque départ |
 | **Banc de test** | Construction d'un défaut franc : choix des phases L1, L2, L3 et de la terre |
+| **Fresnel et défauts** | Diagramme de Fresnel et formes d'onde en temps réel (arrivée ou départ), tableau module / angle, fiches théoriques de chaque défaut |
 
 L'éditeur Node-RED est sur http://localhost:1880.
 
@@ -92,11 +95,12 @@ src/demirame/
     mapping.py      table des adresses Modbus (unique)
     protection.py   programme de l'automate (I>, Io>, tempos, verrouillage, relevé des temps)
     plc_main.py     automate : serveur Modbus + cycle de 20 ms
-    simulation.py   modèle du poste (disjoncteurs, courants par phase, défauts, tension)
+    simulation.py   modèle du poste en phaseurs (disjoncteurs, courants, tensions, défauts)
     sim_main.py     simulation : client Modbus, pas de 10 ms
 node-red/
     package.json    dépendances Node-RED
     flows.json      l'IHM (à ouvrir dans l'éditeur Node-RED)
 tests/
 docs/
+    figures/        diagrammes de Fresnel (SVG) et leur script de génération
 ```
