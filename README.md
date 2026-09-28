@@ -64,7 +64,17 @@ Puis ouvrir **http://localhost:1880/dashboard** :
 | **Banc de test** | Construction d'un défaut franc : choix des phases L1, L2, L3 et de la terre |
 | **Fresnel et défauts** | Diagramme de Fresnel et formes d'onde en temps réel (arrivée ou départ), tableau module / angle, fiches théoriques de chaque défaut |
 
-L'éditeur Node-RED est sur http://localhost:1880.
+L'**éditeur Node-RED** est sur http://localhost:1880. Il montre les nœuds et
+leurs connexions, rangés en 4 zones qui suivent le trajet des données :
+
+1. **Démarrage** : chargement de la table des adresses Modbus ;
+2. **Lecture de l'automate** : trois nœuds Modbus lisent les coils, les
+   registres et les phaseurs toutes les 250 ms (l'état « active » sous chaque
+   nœud indique que la connexion Modbus fonctionne), puis « Décodage état »
+   construit l'objet envoyé aux pages ;
+3. **Pages de l'IHM** : un nœud par page ou courbe du tableau de bord ;
+4. **Commandes** : les boutons des pages envoient une commande, traduite en
+   écriture Modbus dans l'automate.
 
 ## Démonstration rapide
 

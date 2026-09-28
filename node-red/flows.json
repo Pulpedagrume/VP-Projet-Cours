@@ -360,13 +360,14 @@
         "once": true,
         "onceDelay": "0.1",
         "topic": "",
-        "x": 130,
-        "y": 60,
+        "x": 180,
+        "y": 100,
         "wires": [
             [
                 "fn_adresses"
             ]
-        ]
+        ],
+        "g": "zone_demarrage"
     },
     {
         "id": "fn_adresses",
@@ -380,9 +381,10 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 60,
-        "wires": []
+        "x": 470,
+        "y": 100,
+        "wires": [],
+        "g": "zone_demarrage"
     },
     {
         "id": "lire_coils",
@@ -407,14 +409,15 @@
         "ioFile": "",
         "useIOForPayload": false,
         "emptyMsgOnFail": false,
-        "x": 140,
-        "y": 140,
+        "x": 180,
+        "y": 220,
         "wires": [
             [
                 "fn_coils"
             ],
             []
-        ]
+        ],
+        "g": "zone_lecture"
     },
     {
         "id": "fn_coils",
@@ -428,9 +431,10 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 140,
-        "wires": []
+        "x": 470,
+        "y": 220,
+        "wires": [],
+        "g": "zone_lecture"
     },
     {
         "id": "lire_phaseurs",
@@ -455,14 +459,15 @@
         "ioFile": "",
         "useIOForPayload": false,
         "emptyMsgOnFail": false,
-        "x": 160,
-        "y": 190,
+        "x": 180,
+        "y": 290,
         "wires": [
             [
                 "fn_phaseurs"
             ],
             []
-        ]
+        ],
+        "g": "zone_lecture"
     },
     {
         "id": "fn_phaseurs",
@@ -476,9 +481,10 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 190,
-        "wires": []
+        "x": 470,
+        "y": 290,
+        "wires": [],
+        "g": "zone_lecture"
     },
     {
         "id": "lire_registres",
@@ -503,14 +509,15 @@
         "ioFile": "",
         "useIOForPayload": false,
         "emptyMsgOnFail": false,
-        "x": 150,
-        "y": 240,
+        "x": 180,
+        "y": 360,
         "wires": [
             [
                 "fn_decodage"
             ],
             []
-        ]
+        ],
+        "g": "zone_lecture"
     },
     {
         "id": "fn_decodage",
@@ -524,8 +531,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 240,
+        "x": 470,
+        "y": 360,
         "wires": [
             [
                 "tpl_conduite",
@@ -541,7 +548,8 @@
             [
                 "courbe_io"
             ]
-        ]
+        ],
+        "g": "zone_lecture"
     },
     {
         "id": "tpl_conduite",
@@ -561,13 +569,14 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 660,
-        "y": 160,
+        "x": 820,
+        "y": 100,
         "wires": [
             [
                 "fn_commandes"
             ]
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "courbe_i",
@@ -625,11 +634,12 @@
         "height": 4,
         "className": "",
         "interpolation": "linear",
-        "x": 700,
-        "y": 360,
+        "x": 820,
+        "y": 470,
         "wires": [
             []
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "courbe_io",
@@ -687,11 +697,12 @@
         "height": 4,
         "className": "",
         "interpolation": "linear",
-        "x": 700,
-        "y": 400,
+        "x": 820,
+        "y": 530,
         "wires": [
             []
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "tpl_journal",
@@ -711,13 +722,14 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 650,
-        "y": 200,
+        "x": 820,
+        "y": 160,
         "wires": [
             [
                 "fn_commandes"
             ]
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "tpl_releve",
@@ -737,13 +749,14 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 690,
-        "y": 240,
+        "x": 820,
+        "y": 220,
         "wires": [
             [
                 "fn_commandes"
             ]
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "tpl_reglages",
@@ -763,13 +776,14 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 650,
+        "x": 820,
         "y": 280,
         "wires": [
             [
                 "fn_commandes"
             ]
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "tpl_banc",
@@ -789,13 +803,14 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 650,
-        "y": 320,
+        "x": 820,
+        "y": 340,
         "wires": [
             [
                 "fn_commandes"
             ]
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "tpl_fresnel",
@@ -815,13 +830,14 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 660,
-        "y": 440,
+        "x": 820,
+        "y": 400,
         "wires": [
             [
                 "fn_commandes"
             ]
-        ]
+        ],
+        "g": "zone_pages"
     },
     {
         "id": "fn_commandes",
@@ -835,20 +851,21 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 930,
-        "y": 240,
+        "x": 1180,
+        "y": 250,
         "wires": [
             [
                 "ecrire"
             ]
-        ]
+        ],
+        "g": "zone_commandes"
     },
     {
         "id": "ecrire",
         "type": "modbus-flex-write",
         "z": "onglet_ihm",
         "name": "Écrire dans l'automate",
-        "showStatusActivities": false,
+        "showStatusActivities": true,
         "showErrors": true,
         "showWarnings": true,
         "server": "modbus_automate",
@@ -856,11 +873,102 @@
         "keepMsgProperties": false,
         "delayOnStart": false,
         "startDelayTime": "",
-        "x": 1160,
-        "y": 240,
+        "x": 1470,
+        "y": 250,
         "wires": [
             [],
             []
-        ]
+        ],
+        "g": "zone_commandes"
+    },
+    {
+        "id": "zone_demarrage",
+        "type": "group",
+        "z": "onglet_ihm",
+        "name": "1. Démarrage : chargement de la table des adresses Modbus",
+        "style": {
+            "label": true,
+            "fill": "#e3f3d3",
+            "fill-opacity": "0.5",
+            "color": "#000000"
+        },
+        "nodes": [
+            "inj_demarrage",
+            "fn_adresses"
+        ],
+        "x": 30,
+        "y": 55,
+        "w": 590,
+        "h": 85
+    },
+    {
+        "id": "zone_lecture",
+        "type": "group",
+        "z": "onglet_ihm",
+        "name": "2. Lecture de l'automate (Modbus TCP 127.0.0.1:5020, toutes les 250 ms)",
+        "style": {
+            "label": true,
+            "fill": "#ffefbf",
+            "fill-opacity": "0.5",
+            "color": "#000000"
+        },
+        "nodes": [
+            "lire_coils",
+            "fn_coils",
+            "lire_phaseurs",
+            "fn_phaseurs",
+            "lire_registres",
+            "fn_decodage"
+        ],
+        "x": 30,
+        "y": 175,
+        "w": 590,
+        "h": 225
+    },
+    {
+        "id": "zone_pages",
+        "type": "group",
+        "z": "onglet_ihm",
+        "name": "3. Pages de l'IHM (Dashboard 2.0)",
+        "style": {
+            "label": true,
+            "fill": "#bfdbef",
+            "fill-opacity": "0.5",
+            "color": "#000000"
+        },
+        "nodes": [
+            "tpl_conduite",
+            "tpl_journal",
+            "tpl_releve",
+            "tpl_reglages",
+            "tpl_banc",
+            "tpl_fresnel",
+            "courbe_i",
+            "courbe_io"
+        ],
+        "x": 670,
+        "y": 55,
+        "w": 300,
+        "h": 515
+    },
+    {
+        "id": "zone_commandes",
+        "type": "group",
+        "z": "onglet_ihm",
+        "name": "4. Commandes de l'opérateur -> écriture dans l'automate",
+        "style": {
+            "label": true,
+            "fill": "#fdd0a2",
+            "fill-opacity": "0.5",
+            "color": "#000000"
+        },
+        "nodes": [
+            "fn_commandes",
+            "ecrire"
+        ],
+        "x": 1030,
+        "y": 205,
+        "w": 590,
+        "h": 85
     }
 ]
