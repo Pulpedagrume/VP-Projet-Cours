@@ -3,8 +3,10 @@
 Projet GEII : contrôle-commande virtuel d'une **demi-rame HTA de poste
 source** (1 arrivée + 3 départs).
 
-- **Simulation** du procédé en Python (courants par phase, défauts francs, disjoncteurs)
-- **Automate virtuel** en Python (protections I> / Io>, commande des disjoncteurs, relevé des temps)
+- **Simulation** du procédé en Python (phaseurs, défauts francs fugitifs / semi-permanents / permanents,
+  disjoncteurs, **mode aléatoire** qui représente la vie normale du poste)
+- **Automate virtuel** en Python (protections I> / Io>, **réenclencheur RR + RL** sur les départs,
+  protection de l'arrivée avec **sélectivité logique SLP**, relevé des temps)
 - **Modbus TCP** entre les composants (`pymodbus`)
 - **IHM ACR** avec Node-RED (Dashboard 2.0)
 
@@ -58,10 +60,10 @@ Puis ouvrir **http://localhost:1880/dashboard** :
 
 | Page | Contenu |
 |---|---|
-| **Conduite** | Schéma unifilaire (DJ, voyants I> / Io>, courants L1 L2 L3 et Io), commande par sélection puis exécution, alarmes actives et acquittement, tendances, journal des événements |
-| **Relevé des temporisations** | Pour chaque départ : phases vues, protection, réglage, t protection, écart, t ouverture DJ, t élimination ; historique exportable en CSV |
-| **Réglages protections** | Seuils et temporisations I> / Io> de chaque départ |
-| **Banc de test** | Construction d'un défaut franc : choix des phases L1, L2, L3 et de la terre |
+| **Conduite** | Schéma unifilaire (DJ, voyants I> / Io> / SLP, état du réenclencheur, courants L1 L2 L3 et Io), commande par sélection puis exécution, alarmes actives et acquittement, tendances, journal des événements |
+| **Relevé des temporisations** | Pour l'arrivée et chaque départ : phases vues, protection, réglage, t protection, écart, t ouverture DJ, t élimination, résultat du réenclencheur ; historique exportable en CSV |
+| **Réglages protections** | SLP en / hors service, seuils et temporisations de l'arrivée et des départs, tempo SLP, réenclencheur en / hors service |
+| **Banc de test** | **Mode aléatoire** (marche / arrêt) ; défaut manuel sur un départ ou sur le jeu de barres : phases L1, L2, L3, terre et nature (fugitif, semi-permanent, permanent) |
 | **Fresnel et défauts** | Diagramme de Fresnel et formes d'onde en temps réel (arrivée ou départ), tableau module / angle, fiches théoriques de chaque défaut |
 
 L'**éditeur Node-RED** est sur http://localhost:1880. Il montre les nœuds et
@@ -78,19 +80,20 @@ leurs connexions, rangés en 4 zones qui suivent le trajet des données :
 
 ## Démonstration rapide
 
-1. **Banc de test** → Départ 2 : sélectionner **L1** et **L2** → *Appliquer*
-   (biphasé isolé). Après 500 ms le DJ du départ 2 s'ouvre, alarme
-   « déclenchement I> (L1-L2) ».
-2. **Relevé des temporisations** : t protection ≈ 500 ms, t ouverture DJ,
-   t élimination.
-3. **Conduite** → cliquer sur le DJ du départ 2 → *Fermer* : l'automate
-   refuse tant que l'alarme n'est pas acquittée.
-4. **Banc de test** → *Supprimer*, puis **Conduite** → *Acquitter* → sélectionner
-   le DJ → *Fermer* : le départ revient en service.
-5. Recommencer avec **L3 + Terre** (monophasé terre) : seul Io> démarre,
-   déclenchement après 1000 ms.
-6. **Réglages** : passer la tempo I> à 250 ms, refaire un défaut, comparer le
-   relevé.
+1. **Réenclencheur, défaut fugitif** : Banc de test → Départ 1 → **L1 + Terre**,
+   **Fugitif** → *Appliquer*. Io> déclenche après 1 s, le RR referme 0,3 s plus
+   tard et le journal indique « cycle réussi, défaut éliminé par le RR ».
+2. **Défaut semi-permanent** : Départ 2 → **L1 + L2**, **Semi-permanent**. Le RR
+   échoue (redéclenchement), puis le RL referme au bout de 15 s et réussit.
+3. **Défaut permanent** : Départ 3 → **L1 + L2 + L3**, **Permanent**. Après RR
+   et RL : **déclenchement définitif**. Supprimer le défaut, puis Conduite →
+   *Acquitter* → cliquer sur le DJ → *Fermer*.
+4. **SLP** : Jeu de barres → **L1 + Terre** → *Appliquer*. L'arrivée déclenche
+   en ≈ 200 ms (voyant SLP rouge). Réglages → *Mettre hors service* la SLP,
+   recommencer : ≈ 1000 ms. Comparer dans le **Relevé des temporisations**.
+5. **Mode aléatoire** : Banc de test → *Démarrer*. Laisser vivre le poste,
+   suivre le journal et le relevé ; intervenir (acquitter, refermer) quand
+   une cellule est verrouillée.
 
 ## Tests
 
@@ -103,10 +106,11 @@ uv run pytest
 ```
 src/demirame/
     mapping.py      table des adresses Modbus (unique)
-    protection.py   programme de l'automate (I>, Io>, tempos, verrouillage, relevé des temps)
+    protection.py   programme de l'automate (I>, Io>, réenclencheur, SLP, relevé des temps)
     plc_main.py     automate : serveur Modbus + cycle de 20 ms
     simulation.py   modèle du poste en phaseurs (disjoncteurs, courants, tensions, défauts)
     sim_main.py     simulation : client Modbus, pas de 10 ms
+    aleatoire.py    mode aléatoire (charge variable, défauts tirés au hasard)
 node-red/
     package.json    dépendances Node-RED
     flows.json      l'IHM (à ouvrir dans l'éditeur Node-RED)

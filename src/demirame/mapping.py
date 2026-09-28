@@ -15,8 +15,9 @@ Chaque cellule du poste a son bloc, dans les coils ET dans les registres :
 Adresse = 20 x numéro de bloc + décalage.
 Exemple : courant L2 du départ 3 = 20 x 3 + HR_I_L2 = 61.
 
-Les décalages des disjoncteurs (position, ordres, commandes ACR) sont les
-mêmes dans tous les blocs, arrivée comprise.
+Les décalages des disjoncteurs (position, ordres, commandes ACR), des
+protections, des réglages, du relevé et du banc de test sont les mêmes dans
+tous les blocs, arrivée comprise.
 
 Adresses en base 0. Le tableau complet est dans docs/mapping_modbus.md.
 """
@@ -47,11 +48,14 @@ CO_ACR_FERMETURE = 4        # télécommande ACR (impulsion)       IHM -> automa
 # Général (bloc 0 seulement)
 CO_ACR_ACQUITTEMENT = 5     # acquittement (impulsion)           IHM -> automate
 CO_VOYANT_ALARME = 6        # au moins une alarme mémorisée      automate -> IHM
-# Protections (blocs départs)
+CO_MODE_ALEATOIRE = 7       # mode aléatoire en marche           IHM -> simulation
+CO_SLP_EN_SERVICE = 8       # sélectivité logique en service     IHM -> automate
+# Protections (tous les blocs)
 CO_DEMARRAGE_PHASE = 10     # I > seuil : temporisation en cours automate -> IHM
 CO_DEMARRAGE_TERRE = 11     # Io > seuil : temporisation en cours
-CO_DECLENCHEMENT_PHASE = 12  # alarme mémorisée : déclenché par I>
-CO_DECLENCHEMENT_TERRE = 13  # alarme mémorisée : déclenché par Io>
+CO_DECLENCHEMENT_PHASE = 12  # dernier déclenchement dû à I>
+CO_DECLENCHEMENT_TERRE = 13  # dernier déclenchement dû à Io>
+CO_DECLENCHEMENT_SLP = 14   # bloc 0 : déclenchement accéléré par la SLP (défaut barre)
 
 # ---------------------------------------------------------------------------
 # HOLDING REGISTERS (mots de 16 bits) : décalages dans chaque bloc
@@ -63,22 +67,30 @@ HR_I_L3 = 2                 # courant phase L3 (A)
 HR_IO = 3                   # courant résiduel Io (A)
 # Général (bloc 0 seulement)
 HR_TENSION_BARRE = 4        # kV x 10 (200 = 20,0 kV)            simulation -> automate
-HR_MOT_DE_VIE = 10          # +1 à chaque cycle                  automate -> IHM
-HR_DUREE_CYCLE = 11         # durée du dernier cycle (ms)        automate -> IHM
-# Réglages des protections (blocs départs)                        IHM -> automate
+HR_MOT_DE_VIE = 18          # +1 à chaque cycle                  automate -> IHM
+HR_DUREE_CYCLE = 19         # durée du dernier cycle (ms)        automate -> IHM
+# Réglages des protections (tous les blocs)                       IHM -> automate
 HR_REGLAGE_SEUIL_PHASE = 5  # seuil I> (A)
 HR_REGLAGE_TEMPO_PHASE = 6  # temporisation I> (ms)
 HR_REGLAGE_SEUIL_TERRE = 7  # seuil Io> (A)
 HR_REGLAGE_TEMPO_TERRE = 8  # temporisation Io> (ms)
-# Relevé du dernier déclenchement (blocs départs)                 automate -> IHM
+HR_REGLAGE_RRL = 9          # départs : réenclencheur en service (1) ou hors service (0)
+HR_REGLAGE_TEMPO_SLP = 9    # bloc 0 : temporisation accélérée de la SLP (ms)
+# Relevé du dernier déclenchement (tous les blocs)                automate -> IHM
 HR_TEMPS_PROTECTION = 10    # apparition du défaut -> ordre de déclenchement (ms)
 HR_TEMPS_OUVERTURE_DJ = 11  # ordre de déclenchement -> DJ ouvert (ms)
 HR_TEMPS_ELIMINATION = 12   # apparition du défaut -> DJ ouvert (ms)
 HR_PHASES_DEFAUT = 13       # phases vues en défaut (bits, voir ci-dessous)
 HR_NB_DECLENCHEMENTS = 14   # compteur de déclenchements
-HR_ORIGINE_DECLENCHEMENT = 16  # protection qui a déclenché : 1 = I>, 2 = Io>, 3 = les deux
-# Banc de test (blocs départs)                                    IHM -> simulation
-HR_DEFAUT_INJECTE = 15      # défaut appliqué (bits, voir ci-dessous) - l'automate ne le lit pas
+HR_ORIGINE_DECLENCHEMENT = 16  # protection(s) qui ont déclenché (bits ORIGINE_*)
+# Banc de test (tous les blocs ; bloc 0 = défaut sur le jeu de barres)
+# Écrit par l'IHM ou le mode aléatoire, lu par la simulation, qui le remet à 0
+# quand le défaut disparaît. L'automate ne le lit pas.
+HR_DEFAUT_INJECTE = 15      # phases en défaut (bits, voir ci-dessous)
+HR_NATURE_DEFAUT = 17       # nature du défaut (NATURE_*)
+# Réenclencheur (départs)                                         automate -> IHM
+HR_ETAPE_RRL = 18           # étape du cycle de réenclenchement (ETAPE_*)
+HR_RESULTAT_RRL = 19        # résultat du dernier cycle (RESULTAT_*)
 
 # ---------------------------------------------------------------------------
 # Codage des phases en défaut (HR_PHASES_DEFAUT et HR_DEFAUT_INJECTE)
@@ -92,6 +104,26 @@ BITS_PHASES = [BIT_L1, BIT_L2, BIT_L3]
 # Codage de HR_ORIGINE_DECLENCHEMENT
 ORIGINE_PHASE = 1           # I>  (ANSI 51)
 ORIGINE_TERRE = 2           # Io> (ANSI 51N)
+ORIGINE_SLP = 4             # sélectivité logique (arrivée, défaut barre)
+
+# Codage de HR_NATURE_DEFAUT
+NATURE_PERMANENT = 0        # reste jusqu'à la réparation
+NATURE_FUGITIF = 1          # disparaît dès que le circuit est mis hors tension
+NATURE_SEMI_PERMANENT = 2   # disparaît après quelques secondes hors tension
+
+# Codage de HR_ETAPE_RRL (cycle de réenclenchement)
+ETAPE_REPOS = 0
+ETAPE_TEMPS_MORT_RR = 1     # DJ ouvert, attente avant le réenclenchement rapide
+ETAPE_RECUPERATION_RR = 2   # DJ refermé, surveillance après le RR
+ETAPE_TEMPS_MORT_RL = 3     # DJ ouvert, attente avant le réenclenchement lent
+ETAPE_RECUPERATION_RL = 4   # DJ refermé, surveillance après le RL
+ETAPE_DEFINITIF = 5         # déclenchement définitif : acquittement nécessaire
+
+# Codage de HR_RESULTAT_RRL
+RESULTAT_AUCUN = 0
+RESULTAT_REUSSI_RR = 1      # défaut éliminé par le réenclenchement rapide
+RESULTAT_REUSSI_RL = 2      # défaut éliminé par le réenclenchement lent
+RESULTAT_DEFINITIF = 3      # défaut permanent : déclenchement définitif
 
 ECHELLE_TENSION = 10        # valeur Modbus = kV x 10
 

@@ -35,7 +35,8 @@ def phaseurs(defaut):
     simulation.BRUIT_CHARGE = 0
     simulation.BRUIT_TENSION = 0
     poste = simulation.Poste()
-    poste.pas([False] * 4, [False] * 4, [defaut, 0, 0], 10)
+    poste.injecter(1, defaut)
+    poste.pas([False] * 4, [False] * 4, 10)
     return poste.courants[1], poste.courant_residuel(1), poste.tensions, poste.tension_residuelle
 
 

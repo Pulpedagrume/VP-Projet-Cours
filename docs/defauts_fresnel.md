@@ -97,7 +97,7 @@ leur somme est nulle, **Io ≈ 0**. Aucune protection ne démarre.
 
 - Les trois phases sont en court-circuit : défaut **symétrique**.
 - Trois courants égaux **Icc3 = U / (√3 · Zcc) = 4000 A**, en retard de 75°
-  sur leur tension simple.
+  sur leur tension simple (≈ 4060 A mesurés : la charge s'ajoute).
 - Le système reste équilibré : **Io = 0, V0 = 0**.
 - Creux de tension équilibré : les tensions tombent à 60 % au jeu de barres.
 - **La protection I> (51)** déclenche.
@@ -109,7 +109,7 @@ leur somme est nulle, **Io ≈ 0**. Aucune protection ne démarre.
 | Monophasé terre | faibles (charge + 300 A sur la phase) | 300 A | 11,5 kV | Io> seule |
 | Biphasé isolé | ≈ 3460 A sur 2 phases, opposés | 0 | 0 | I> |
 | Biphasé terre | ≈ 3460 A sur 2 phases | 300 A | 2,3 kV | I> et Io> |
-| Triphasé | 4000 A sur les 3 phases | 0 | 0 | I> |
+| Triphasé | ≈ 4000 A sur les 3 phases (Icc3 + charge) | 0 | 0 | I> |
 
 À retenir :
 - **I>** voit les courts-circuits entre phases, car les courants sont très forts.

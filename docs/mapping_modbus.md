@@ -13,7 +13,7 @@ comme dans les registres :
 
 | Bloc | Cellule | Adresses | Phaseurs |
 |---|---|---|---|
-| 0 | Arrivée + informations générales | 0 – 19 | 80 – 99 |
+| 0 | Arrivée, jeu de barres et informations générales | 0 – 19 | 80 – 99 |
 | 1 | Départ 1 | 20 – 39 | 100 – 119 |
 | 2 | Départ 2 | 40 – 59 | 120 – 139 |
 | 3 | Départ 3 | 60 – 79 | 140 – 159 |
@@ -35,38 +35,71 @@ décalage.
 |---|---|---|---|---|
 | 0 | tous | Position DJ (1 = fermé) | Procédé → automate | Simulation |
 | 1 | tous | Ordre d'ouverture DJ | Automate → procédé | Automate |
-| 2 | tous | Ordre de fermeture DJ | Automate → procédé | Automate |
+| 2 | tous | Ordre de fermeture DJ (manuel ou réenclenchement) | Automate → procédé | Automate |
 | 3 | tous | Télécommande ACR d'ouverture (impulsion) | IHM → automate | Node-RED, remis à 0 par l'automate |
 | 4 | tous | Télécommande ACR de fermeture (impulsion) | IHM → automate | Node-RED, remis à 0 par l'automate |
 | 5 | 0 | Acquittement ACR (impulsion) | IHM → automate | Node-RED, remis à 0 par l'automate |
-| 6 | 0 | Voyant alarme générale | Automate → IHM | Automate |
-| 10 | départs | Démarrage I> (seuil dépassé, tempo en cours) | Automate → IHM | Automate |
-| 11 | départs | Démarrage Io> | Automate → IHM | Automate |
-| 12 | départs | Alarme mémorisée : déclenchement I> | Automate → IHM | Automate |
-| 13 | départs | Alarme mémorisée : déclenchement Io> | Automate → IHM | Automate |
+| 6 | 0 | Voyant alarme générale (verrouillage non acquitté) | Automate → IHM | Automate |
+| 7 | 0 | Mode aléatoire en marche | IHM → simulation | Node-RED |
+| 8 | 0 | Sélectivité logique (SLP) en service | IHM → automate | Node-RED (l'automate écrit 1 au démarrage) |
+| 10 | tous | Démarrage I> (seuil dépassé, tempo en cours) | Automate → IHM | Automate |
+| 11 | tous | Démarrage Io> | Automate → IHM | Automate |
+| 12 | tous | Dernier déclenchement dû à I> | Automate → IHM | Automate |
+| 13 | tous | Dernier déclenchement dû à Io> | Automate → IHM | Automate |
+| 14 | 0 | Déclenchement accéléré par la SLP (défaut barre) | Automate → IHM | Automate |
+
+Sur un départ, les indications 12 et 13 s'effacent à l'acquittement ou quand
+le cycle de réenclenchement réussit.
 
 ## Holding registers (mots de 16 bits) : décalage dans le bloc
 
 | Décalage | Blocs | Variable | Unité | Sens | Écrit par |
 |---|---|---|---|---|---|
-| 0 | tous | Courant phase L1 | A | Procédé → automate | Simulation |
-| 1 | tous | Courant phase L2 | A | Procédé → automate | Simulation |
-| 2 | tous | Courant phase L3 | A | Procédé → automate | Simulation |
+| 0 – 2 | tous | Courants de phase L1, L2, L3 | A | Procédé → automate | Simulation |
 | 3 | tous | Courant résiduel Io | A | Procédé → automate | Simulation |
-| 4 | 0 | Tension jeu de barres | kV × 10 | Procédé → automate | Simulation |
-| 5 | départs | Réglage seuil I> | A (50 – 8000) | IHM → automate | Node-RED (l'automate écrit les valeurs par défaut et corrige une valeur hors plage) |
-| 6 | départs | Réglage tempo I> | ms (0 – 10000) | IHM → automate | idem |
-| 7 | départs | Réglage seuil Io> | A (5 – 1000) | IHM → automate | idem |
-| 8 | départs | Réglage tempo Io> | ms (0 – 10000) | IHM → automate | idem |
-| 10 | 0 | Mot de vie (+1 par cycle) | — | Automate → IHM | Automate |
-| 11 | 0 | Durée du dernier cycle automate | ms | Automate → IHM | Automate |
-| 10 | départs | Relevé : t protection (apparition → ordre) | ms | Automate → IHM | Automate |
-| 11 | départs | Relevé : t ouverture DJ (ordre → DJ ouvert) | ms | Automate → IHM | Automate |
-| 12 | départs | Relevé : t élimination (apparition → DJ ouvert) | ms | Automate → IHM | Automate |
-| 13 | départs | Relevé : phases vues en défaut | bits (voir ci-dessous) | Automate → IHM | Automate |
-| 14 | départs | Relevé : nombre de déclenchements | — | Automate → IHM | Automate |
-| 15 | départs | **Banc de test** : défaut injecté | bits (voir ci-dessous) | Banc de test → simulation | Node-RED (l'automate ne le lit pas) |
-| 16 | départs | Relevé : protection ayant déclenché | 1 = I>, 2 = Io>, 3 = les deux | Automate → IHM | Automate |
+| 4 | 0 | Tension jeu de barres (moyenne des tensions composées) | kV × 10 | Procédé → automate | Simulation |
+| 5 | tous | Réglage seuil I> | A (50 – 8000) | IHM → automate | Node-RED ¹ |
+| 6 | tous | Réglage tempo I> | ms (0 – 10000) | IHM → automate | Node-RED ¹ |
+| 7 | tous | Réglage seuil Io> | A (5 – 1000) | IHM → automate | Node-RED ¹ |
+| 8 | tous | Réglage tempo Io> | ms (0 – 10000) | IHM → automate | Node-RED ¹ |
+| 9 | départs | Réenclencheur (RRL) en service | 0 / 1 | IHM → automate | Node-RED ¹ |
+| 9 | 0 | Tempo SLP (déclenchement accéléré) | ms (0 – 10000) | IHM → automate | Node-RED ¹ |
+| 10 | tous | Relevé : t protection (apparition → ordre) | ms | Automate → IHM | Automate |
+| 11 | tous | Relevé : t ouverture DJ (ordre → DJ ouvert) | ms | Automate → IHM | Automate |
+| 12 | tous | Relevé : t élimination (apparition → DJ ouvert) | ms | Automate → IHM | Automate |
+| 13 | tous | Relevé : phases vues en défaut | bits | Automate → IHM | Automate |
+| 14 | tous | Relevé : nombre de déclenchements | — | Automate → IHM | Automate |
+| 15 | tous | **Banc de test** : défaut présent (bloc 0 = jeu de barres) | bits | IHM ↔ simulation | Node-RED ou mode aléatoire ; remis à 0 par la simulation quand le défaut disparaît ² |
+| 16 | tous | Relevé : protection(s) ayant déclenché | bits : 1 = I>, 2 = Io>, 4 = SLP | Automate → IHM | Automate |
+| 17 | tous | **Banc de test** : nature du défaut | 0 permanent, 1 fugitif, 2 semi-permanent | IHM ↔ simulation | Node-RED ou simulation ² |
+| 18 | départs | Étape du réenclencheur | voir ci-dessous | Automate → IHM | Automate |
+| 19 | départs | Résultat du dernier cycle | voir ci-dessous | Automate → IHM | Automate |
+| 18 | 0 | Mot de vie (+1 par cycle) | — | Automate → IHM | Automate |
+| 19 | 0 | Durée du dernier cycle automate | ms | Automate → IHM | Automate |
+
+¹ L'automate écrit les valeurs par défaut au démarrage et réécrit la valeur
+réellement appliquée si une valeur hors plage est envoyée.
+
+² L'automate ne lit jamais les décalages 15 et 17. L'IHM écrit d'abord la
+nature, puis les bits ; la simulation ne réagit qu'au changement des bits.
+
+## Réenclencheur (décalages 18 et 19 des départs)
+
+| Étape (18) | Signification |
+|---|---|
+| 0 | Repos (prêt) |
+| 1 | Temps mort RR : DJ ouvert, refermeture dans 0,3 s |
+| 2 | Récupération RR : DJ refermé, surveillance 10 s |
+| 3 | Temps mort RL : DJ ouvert, refermeture dans 15 s |
+| 4 | Récupération RL : DJ refermé, surveillance 10 s |
+| 5 | Déclenchement définitif : acquittement nécessaire |
+
+| Résultat (19) | Signification |
+|---|---|
+| 0 | Aucun (ou cycle en cours) |
+| 1 | Défaut éliminé par le RR (fugitif) |
+| 2 | Défaut éliminé par le RL (semi-permanent) |
+| 3 | Déclenchement définitif (permanent) |
 
 ## Zone des phaseurs : holding registers 80 à 159
 
