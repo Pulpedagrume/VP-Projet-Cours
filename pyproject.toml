@@ -1,18 +1,24 @@
 [project]
-name = "proj"
+name = "demirame"
 version = "0.1.0"
-description = "Add your description here"
+description = "Contrôle-commande virtuel d'une demi-rame HTA de poste source (simulation, automate, Modbus TCP, IHM Node-RED)"
 readme = "README.md"
 authors = [
     { name = "Pulpedagrume", email = "vaucheret.tom06@gmail.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "pymodbus>=3.15.0",
+    "pymodbus>=3.15.0,<4",
 ]
 
 [project.scripts]
-proj = "proj:main"
+demirame-plc = "demirame.plc_main:main"
+demirame-sim = "demirame.sim_main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.14,<0.13.0"]
