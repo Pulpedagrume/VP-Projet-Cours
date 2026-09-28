@@ -11,3 +11,11 @@ wheels/
 
 # Tests
 .pytest_cache/
+
+# Node-RED (seuls package.json, package-lock.json et flows.json sont versionnés)
+node_modules/
+node-red/settings.js
+node-red/.config.*
+node-red/.flows*.backup
+node-red/flows_cred.json
+node-red/lib/

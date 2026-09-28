@@ -1,0 +1,587 @@
+[
+    {
+        "id": "onglet_ihm",
+        "type": "tab",
+        "label": "IHM demi-rame",
+        "disabled": false,
+        "info": "IHM du poste de conduite (ACR). Lit et écrit dans l'automate en Modbus TCP (port 5020)."
+    },
+    {
+        "id": "modbus_automate",
+        "type": "modbus-client",
+        "name": "Automate (127.0.0.1:5020)",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "127.0.0.1",
+        "tcpPort": "5020",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true,
+        "showErrors": false,
+        "showWarnings": true,
+        "showLogs": false
+    },
+    {
+        "id": "ui_base",
+        "type": "ui-base",
+        "name": "IHM demi-rame",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "showPageTitle": true,
+        "navigationStyle": "default",
+        "titleBarStyle": "default"
+    },
+    {
+        "id": "ui_theme",
+        "type": "ui-theme",
+        "name": "Thème poste",
+        "colors": {
+            "surface": "#1f3a5f",
+            "primary": "#1f6feb",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "page_acr",
+        "type": "ui-page",
+        "name": "Poste de conduite (ACR)",
+        "ui": "ui_base",
+        "path": "/acr",
+        "icon": "monitor-dashboard",
+        "layout": "grid",
+        "theme": "ui_theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "page_banc",
+        "type": "ui-page",
+        "name": "Banc de test",
+        "ui": "ui_base",
+        "path": "/banc",
+        "icon": "flask",
+        "layout": "grid",
+        "theme": "ui_theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "grp_synoptique",
+        "type": "ui-group",
+        "name": "Synoptique et commandes",
+        "page": "page_acr",
+        "width": "6",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "grp_courbes",
+        "type": "ui-group",
+        "name": "Courbes",
+        "page": "page_acr",
+        "width": "6",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "grp_journal",
+        "type": "ui-group",
+        "name": "Journal des événements",
+        "page": "page_acr",
+        "width": "12",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "grp_banc",
+        "type": "ui-group",
+        "name": "Injection de défauts",
+        "page": "page_banc",
+        "width": "6",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "inj_demarrage",
+        "type": "inject",
+        "z": "onglet_ihm",
+        "name": "Au démarrage",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "fn_adresses"
+            ]
+        ]
+    },
+    {
+        "id": "fn_adresses",
+        "type": "function",
+        "z": "onglet_ihm",
+        "name": "Table des adresses",
+        "func": "// Copie de src/demirame/mapping.py : les mêmes adresses côté IHM.\n// Si vous changez mapping.py, changez aussi ce tableau.\nglobal.set('adr', {\n    // Coils\n    CO_POSITION_DJ: 0,\n    CO_ACR_OUVERTURE: 30,\n    CO_ACR_FERMETURE: 40,\n    CO_ACR_ACQUITTEMENT: 50,\n    CO_SEUIL_PHASE: 60,\n    CO_SEUIL_HOMOPOLAIRE: 70,\n    CO_DECLENCHEMENT_PHASE: 80,\n    CO_DECLENCHEMENT_HOMOPOLAIRE: 90,\n    CO_VOYANT_ALARME: 100,\n    // Holding registers\n    HR_COURANT_DEPART: 0,\n    HR_COURANT_ARRIVEE: 3,\n    HR_COURANT_RESIDUEL: 4,\n    HR_TENSION_BARRE: 7,\n    HR_COMPTEUR_VIE: 20,\n    HR_DEFAUT_INJECTE: 100,\n    ECHELLE_TENSION: 10,\n});\nreturn null;\n",
+        "outputs": 0,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "lire_coils",
+        "type": "modbus-read",
+        "z": "onglet_ihm",
+        "name": "Lire coils 0..100",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "Coil",
+        "adr": "0",
+        "quantity": "101",
+        "rate": "500",
+        "rateUnit": "ms",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "modbus_automate",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "fn_coils"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fn_coils",
+        "type": "function",
+        "z": "onglet_ihm",
+        "name": "Mémoriser coils",
+        "func": "// Garde les derniers coils lus ; le décodage les utilisera.\nflow.set('coils', msg.payload);\nreturn null;\n",
+        "outputs": 0,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "lire_registres",
+        "type": "modbus-read",
+        "z": "onglet_ihm",
+        "name": "Lire registres 0..102",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "0",
+        "quantity": "103",
+        "rate": "500",
+        "rateUnit": "ms",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "modbus_automate",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 160,
+        "y": 220,
+        "wires": [
+            [
+                "fn_decodage"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fn_decodage",
+        "type": "function",
+        "z": "onglet_ihm",
+        "name": "Décodage état",
+        "func": "// Transforme les valeurs Modbus brutes en un objet \"etat\" lisible.\n// Sorties : 1 = synoptique + banc de test, 2 = courbe I, 3 = courbe Io, 4 = journal\nconst a = global.get('adr');\nconst coils = flow.get('coils');\nconst hr = msg.payload;\nif (!a || !coils) return null;\n\nconst etat = {\n    tension: hr[a.HR_TENSION_BARRE] / a.ECHELLE_TENSION,\n    alarme: coils[a.CO_VOYANT_ALARME],\n    arrivee: { nom: 'Arrivée', ferme: coils[a.CO_POSITION_DJ + 3], courant: hr[a.HR_COURANT_ARRIVEE] },\n    departs: [],\n};\nfor (let n = 0; n < 3; n++) {\n    etat.departs.push({\n        nom: 'Départ ' + (n + 1),\n        ferme: coils[a.CO_POSITION_DJ + n],\n        courant: hr[a.HR_COURANT_DEPART + n],\n        io: hr[a.HR_COURANT_RESIDUEL + n],\n        seuilPhase: coils[a.CO_SEUIL_PHASE + n],\n        seuilHomopolaire: coils[a.CO_SEUIL_HOMOPOLAIRE + n],\n        declPhase: coils[a.CO_DECLENCHEMENT_PHASE + n],\n        declHomopolaire: coils[a.CO_DECLENCHEMENT_HOMOPOLAIRE + n],\n        defautInjecte: hr[a.HR_DEFAUT_INJECTE + n],\n    });\n}\n\n// Mot de vie : si le compteur de l'automate ne bouge plus, son cycle est arrêté.\nconst compteur = hr[a.HR_COMPTEUR_VIE];\netat.automateEnLigne = compteur !== context.get('compteur');\ncontext.set('compteur', compteur);\n\n// Courbes : un message par départ (topic = nom de la courbe)\nconst courbeI = etat.departs.map(d => ({ topic: d.nom, payload: d.courant }));\nconst courbeIo = etat.departs.map(d => ({ topic: d.nom, payload: d.io }));\n\n// Journal : on note les changements (fronts) depuis la lecture précédente\nconst avant = context.get('avant');\nconst journal = context.get('journal') || [];\nif (avant) {\n    const heure = new Date().toLocaleTimeString('fr-FR');\n    const tous = etat.departs.concat([etat.arrivee]);\n    tous.forEach((dj, i) => {\n        const prec = i < 3 ? avant.departs[i] : avant.arrivee;\n        if (dj.ferme !== prec.ferme) {\n            journal.unshift(heure + ' - ' + dj.nom + ' : DJ ' + (dj.ferme ? 'fermé' : 'ouvert'));\n        }\n        if (dj.declPhase && !prec.declPhase) {\n            journal.unshift(heure + ' - ' + dj.nom + ' : DÉCLENCHEMENT défaut phase');\n        }\n        if (dj.declHomopolaire && !prec.declHomopolaire) {\n            journal.unshift(heure + ' - ' + dj.nom + ' : DÉCLENCHEMENT défaut terre');\n        }\n    });\n    journal.splice(50);  // on garde les 50 derniers événements\n}\ncontext.set('avant', etat);\ncontext.set('journal', journal);\n\nreturn [{ payload: etat }, courbeI, courbeIo, { payload: journal }];\n",
+        "outputs": 4,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 220,
+        "wires": [
+            [
+                "tpl_synoptique",
+                "tpl_banc"
+            ],
+            [
+                "courbe_i"
+            ],
+            [
+                "courbe_io"
+            ],
+            [
+                "tpl_journal"
+            ]
+        ]
+    },
+    {
+        "id": "tpl_synoptique",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_synoptique",
+        "page": "",
+        "ui": "",
+        "name": "Synoptique",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div v-if=\"etat\" class=\"syno\">\n    <div class=\"bandeau\">\n      <span :class=\"['pastille', enLigne ? 'ok' : 'ko']\">{{ enLigne ? 'Automate en ligne' : 'Communication perdue' }}</span>\n      <span :class=\"['pastille', etat.alarme ? 'ko clignote' : 'ok']\">{{ etat.alarme ? 'ALARME' : 'Aucune alarme' }}</span>\n      <span class=\"tension\">U barre : {{ etat.tension.toFixed(1) }} kV</span>\n    </div>\n\n    <svg viewBox=\"0 0 600 330\" class=\"schema\">\n      <!-- Arrivée -->\n      <line x1=\"300\" y1=\"10\" x2=\"300\" y2=\"100\" :class=\"etat.arrivee.ferme ? 'cable-on' : 'cable-off'\" />\n      <rect x=\"285\" y=\"35\" width=\"30\" height=\"30\" rx=\"3\" :class=\"couleurDj(etat.arrivee)\" />\n      <text x=\"325\" y=\"55\" class=\"nom\">Arrivée  {{ etat.arrivee.courant }} A</text>\n\n      <!-- Jeu de barres -->\n      <line x1=\"60\" y1=\"100\" x2=\"540\" y2=\"100\" :class=\"etat.tension > 1 ? 'barre-on' : 'barre-off'\" />\n      <text x=\"60\" y=\"92\" class=\"petit\">Jeu de barres 20 kV</text>\n\n      <!-- Départs -->\n      <g v-for=\"(d, n) in etat.departs\" :key=\"n\">\n        <line :x1=\"x(n)\" y1=\"100\" :x2=\"x(n)\" y2=\"250\" :class=\"d.ferme && etat.tension > 1 ? 'cable-on' : 'cable-off'\" />\n        <rect :x=\"x(n) - 15\" y=\"150\" width=\"30\" height=\"30\" rx=\"3\" :class=\"couleurDj(d)\" />\n        <text :x=\"x(n)\" y=\"272\" text-anchor=\"middle\" class=\"nom\">{{ d.nom }}</text>\n        <text :x=\"x(n)\" y=\"292\" text-anchor=\"middle\" :class=\"d.seuilPhase ? 'mesure alerte' : 'mesure'\">I = {{ d.courant }} A</text>\n        <text :x=\"x(n)\" y=\"310\" text-anchor=\"middle\" :class=\"d.seuilHomopolaire ? 'mesure alerte' : 'mesure'\">Io = {{ d.io }} A</text>\n        <text v-if=\"d.declPhase\" :x=\"x(n) + 22\" y=\"160\" class=\"alarme\">Défaut phase</text>\n        <text v-if=\"d.declHomopolaire\" :x=\"x(n) + 22\" y=\"178\" class=\"alarme\">Défaut terre</text>\n      </g>\n    </svg>\n\n    <div class=\"commandes\">\n      <div v-for=\"(dj, i) in disjoncteurs\" :key=\"i\" class=\"ligne\">\n        <span class=\"etiquette\">{{ dj.nom }}</span>\n        <v-btn size=\"small\" color=\"red\" variant=\"flat\" :disabled=\"!dj.ferme\" @click=\"envoyer('ouvrir', i)\">Ouvrir</v-btn>\n        <v-btn size=\"small\" color=\"green\" variant=\"flat\" :disabled=\"dj.ferme\" @click=\"envoyer('fermer', i)\">Fermer</v-btn>\n      </div>\n      <v-btn class=\"acquit\" color=\"orange\" variant=\"flat\" @click=\"envoyer('acquitter', 0)\">Acquitter les alarmes</v-btn>\n    </div>\n  </div>\n  <div v-else>En attente des données de l'automate...</div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return { maintenant: Date.now(), dernierMessage: 0, minuterie: null }\n  },\n  computed: {\n    etat() { return this.msg && this.msg.payload },\n    disjoncteurs() { return this.etat.departs.concat([this.etat.arrivee]) },\n    // En ligne si on reçoit des données récentes ET que le mot de vie bouge\n    enLigne() { return this.etat.automateEnLigne && this.maintenant - this.dernierMessage < 2000 }\n  },\n  watch: {\n    msg() { this.dernierMessage = Date.now() }\n  },\n  mounted() {\n    this.minuterie = setInterval(() => { this.maintenant = Date.now() }, 500)\n  },\n  unmounted() {\n    clearInterval(this.minuterie)\n  },\n  methods: {\n    x(n) { return 150 + n * 150 },\n    // Convention de la fiche : vert = fermé, rouge = ouvert\n    couleurDj(dj) { return dj.ferme ? 'dj-ferme' : 'dj-ouvert' },\n    envoyer(commande, dj) { this.send({ payload: { commande: commande, dj: dj } }) }\n  }\n}\n</script>\n\n<style scoped>\n.syno { width: 100%; }\n.bandeau { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }\n.pastille { padding: 2px 10px; border-radius: 12px; color: white; font-weight: bold; }\n.ok { background: #2e7d32; }\n.ko { background: #c62828; }\n.clignote { animation: clignote 1s ease-in-out infinite alternate; }\n@keyframes clignote { to { opacity: 0.35; } }\n.tension { font-weight: bold; }\n.schema { width: 100%; max-width: 600px; }\n.barre-on { stroke: #1565c0; stroke-width: 8; }\n.barre-off { stroke: #9e9e9e; stroke-width: 8; }\n.cable-on { stroke: #1565c0; stroke-width: 3; }\n.cable-off { stroke: #9e9e9e; stroke-width: 3; }\n.dj-ferme { fill: #2e7d32; stroke: #1b5e20; stroke-width: 2; }\n.dj-ouvert { fill: #c62828; stroke: #8e0000; stroke-width: 2; }\n.nom { font-size: 14px; font-weight: bold; fill: currentColor; }\n.petit { font-size: 12px; fill: #616161; }\n.mesure { font-size: 13px; fill: currentColor; }\n.alerte { fill: #e65100; font-weight: bold; }\n.alarme { font-size: 12px; fill: #c62828; font-weight: bold; }\n.commandes { display: flex; flex-direction: column; gap: 6px; }\n.ligne { display: flex; gap: 8px; align-items: center; }\n.etiquette { width: 80px; }\n.acquit { margin-top: 6px; align-self: flex-start; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 650,
+        "y": 180,
+        "wires": [
+            [
+                "fn_commandes"
+            ]
+        ]
+    },
+    {
+        "id": "tpl_banc",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_banc",
+        "page": "",
+        "ui": "",
+        "name": "Banc de test",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div v-if=\"etat\">\n    <p>Injection de défauts francs dans la simulation (l'automate ne lit pas cette zone).</p>\n    <div v-for=\"(d, n) in etat.departs\" :key=\"n\" class=\"ligne\">\n      <span class=\"etiquette\">{{ d.nom }}</span>\n      <v-btn size=\"small\" :variant=\"d.defautInjecte === 0 ? 'flat' : 'outlined'\" color=\"grey\" @click=\"injecter(n, 0)\">Aucun</v-btn>\n      <v-btn size=\"small\" :variant=\"d.defautInjecte === 1 ? 'flat' : 'outlined'\" color=\"red\" @click=\"injecter(n, 1)\">Défaut phase</v-btn>\n      <v-btn size=\"small\" :variant=\"d.defautInjecte === 2 ? 'flat' : 'outlined'\" color=\"orange\" @click=\"injecter(n, 2)\">Défaut terre</v-btn>\n    </div>\n  </div>\n  <div v-else>En attente des données...</div>\n</template>\n\n<script>\nexport default {\n  computed: {\n    etat() { return this.msg && this.msg.payload }\n  },\n  methods: {\n    // valeur : 0 = aucun défaut, 1 = défaut phase, 2 = défaut terre\n    injecter(depart, valeur) { this.send({ payload: { commande: 'defaut', dj: depart, valeur: valeur } }) }\n  }\n}\n</script>\n\n<style scoped>\n.ligne { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }\n.etiquette { width: 80px; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 640,
+        "y": 220,
+        "wires": [
+            [
+                "fn_commandes"
+            ]
+        ]
+    },
+    {
+        "id": "courbe_i",
+        "type": "ui-chart",
+        "z": "onglet_ihm",
+        "group": "grp_courbes",
+        "name": "Courant de phase des départs (A)",
+        "label": "Courant de phase des départs (A)",
+        "order": 1,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "A",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "",
+        "ymax": "",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "false",
+        "pointRadius": 0,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 4,
+        "className": "",
+        "interpolation": "linear",
+        "x": 680,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "courbe_io",
+        "type": "ui-chart",
+        "z": "onglet_ihm",
+        "group": "grp_courbes",
+        "name": "Courant résiduel Io des départs (A)",
+        "label": "Courant résiduel Io des départs (A)",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "A",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "",
+        "ymax": "",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "false",
+        "pointRadius": 0,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 4,
+        "className": "",
+        "interpolation": "linear",
+        "x": 680,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "tpl_journal",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_journal",
+        "page": "",
+        "ui": "",
+        "name": "Journal",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div class=\"journal\">\n    <div v-if=\"!msg || !msg.payload || msg.payload.length === 0\">Aucun événement.</div>\n    <div v-else v-for=\"(ligne, i) in msg.payload\" :key=\"i\" :class=\"ligne.includes('DÉCLENCHEMENT') ? 'decl' : ''\">{{ ligne }}</div>\n  </div>\n</template>\n\n<style scoped>\n.journal { max-height: 260px; overflow-y: auto; font-family: monospace; font-size: 13px; }\n.decl { color: #c62828; font-weight: bold; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 630,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fn_commandes",
+        "type": "function",
+        "z": "onglet_ihm",
+        "name": "Commande -> Modbus",
+        "func": "// Transforme une commande de l'IHM en écriture Modbus.\n// msg.payload = { commande: 'ouvrir' | 'fermer' | 'acquitter' | 'defaut', dj: 0..3, valeur }\n// dj : 0, 1, 2 = départs 1 à 3 ; 3 = arrivée\nconst a = global.get('adr');\nconst c = msg.payload;\nlet fc, adresse, valeur;\n\nif (c.commande === 'ouvrir') {\n    fc = 5; adresse = a.CO_ACR_OUVERTURE + c.dj; valeur = true;\n} else if (c.commande === 'fermer') {\n    fc = 5; adresse = a.CO_ACR_FERMETURE + c.dj; valeur = true;\n} else if (c.commande === 'acquitter') {\n    fc = 5; adresse = a.CO_ACR_ACQUITTEMENT; valeur = true;\n} else if (c.commande === 'defaut') {\n    fc = 6; adresse = a.HR_DEFAUT_INJECTE + c.dj; valeur = c.valeur;\n} else {\n    return null;\n}\n\n// fc 5 = écrire 1 coil, fc 6 = écrire 1 holding register\nmsg.payload = { value: valeur, fc: fc, unitid: 1, address: adresse, quantity: 1 };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 200,
+        "wires": [
+            [
+                "ecrire"
+            ]
+        ]
+    },
+    {
+        "id": "ecrire",
+        "type": "modbus-flex-write",
+        "z": "onglet_ihm",
+        "name": "Écrire dans l'automate",
+        "showStatusActivities": false,
+        "showErrors": true,
+        "showWarnings": true,
+        "server": "modbus_automate",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 1100,
+        "y": 200,
+        "wires": [
+            [],
+            []
+        ]
+    }
+]

@@ -28,6 +28,7 @@ départ en défaut et exécute les ordres du poste de conduite (**ACR**).
 | Protection maximum de courant résiduel (51N) sur chaque départ | Réenclencheur |
 | Ordres d'ouverture et de fermeture ACR (4 DJ) | Défaut de mesure |
 | Verrouillage après déclenchement, acquittement ACR | Défaut du jeu de barres |
+| | Défauts résistants (impédants) : seuls les défauts francs sont simulés |
 
 L'arrivée n'a **pas de protection** en version 1 : son disjoncteur est
 seulement commandé par l'ACR. S'il est ouvert, la barre n'est plus alimentée
@@ -123,5 +124,5 @@ existe.
 - Un seul **serveur Modbus TCP** : l'automate.
 - Deux clients : la **simulation** (écrit mesures et positions, lit les
   ordres) et **Node-RED** (lit états et alarmes, écrit les commandes ACR).
-- La table des adresses Modbus sera définie dans `src/demirame/mapping.py`
-  à l'étape Modbus.
+- La table des adresses Modbus est dans `src/demirame/mapping.py`,
+  documentée dans [`mapping_modbus.md`](mapping_modbus.md).
