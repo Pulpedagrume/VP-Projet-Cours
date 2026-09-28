@@ -3,8 +3,8 @@
 Projet GEII : contrôle-commande virtuel d'une **demi-rame HTA de poste
 source** (1 arrivée + 3 départs).
 
-- **Simulation** du procédé en Python (courants, défauts, disjoncteurs)
-- **Automate virtuel** en Python (protections, commande des disjoncteurs)
+- **Simulation** du procédé en Python (courants par phase, défauts francs, disjoncteurs)
+- **Automate virtuel** en Python (protections I> / Io>, commande des disjoncteurs, relevé des temps)
 - **Modbus TCP** entre les composants (`pymodbus`)
 - **IHM ACR** avec Node-RED (Dashboard 2.0)
 
@@ -53,19 +53,31 @@ npm start
 ```
 
 Puis ouvrir **http://localhost:1880/dashboard** :
-- page **Poste de conduite (ACR)** : synoptique, mesures, commandes, courbes, journal ;
-- page **Banc de test** : injection d'un défaut phase ou terre sur un départ.
+
+| Page | Contenu |
+|---|---|
+| **Conduite** | Schéma unifilaire (DJ, voyants I> / Io>, courants L1 L2 L3 et Io), commande par sélection puis exécution, alarmes actives et acquittement, tendances, journal des événements |
+| **Relevé des temporisations** | Pour chaque départ : phases vues, protection, réglage, t protection, écart, t ouverture DJ, t élimination ; historique exportable en CSV |
+| **Réglages protections** | Seuils et temporisations I> / Io> de chaque départ |
+| **Banc de test** | Construction d'un défaut franc : choix des phases L1, L2, L3 et de la terre |
 
 L'éditeur Node-RED est sur http://localhost:1880.
 
 ## Démonstration rapide
 
-1. Banc de test → Départ 2 → **Défaut phase** : après 0,5 s le DJ du départ 2
-   s'ouvre (rouge), alarme « Défaut phase ».
-2. Poste → **Fermer** le départ 2 : refusé, l'alarme n'est pas acquittée.
-3. Banc de test → Départ 2 → **Aucun**, puis **Acquitter**, puis **Fermer** :
-   le départ revient en service.
-4. Même chose avec **Défaut terre** : seul Io monte, déclenchement après 1 s.
+1. **Banc de test** → Départ 2 : sélectionner **L1** et **L2** → *Appliquer*
+   (biphasé isolé). Après 500 ms le DJ du départ 2 s'ouvre, alarme
+   « déclenchement I> (L1-L2) ».
+2. **Relevé des temporisations** : t protection ≈ 500 ms, t ouverture DJ,
+   t élimination.
+3. **Conduite** → cliquer sur le DJ du départ 2 → *Fermer* : l'automate
+   refuse tant que l'alarme n'est pas acquittée.
+4. **Banc de test** → *Supprimer*, puis **Conduite** → *Acquitter* → sélectionner
+   le DJ → *Fermer* : le départ revient en service.
+5. Recommencer avec **L3 + Terre** (monophasé terre) : seul Io> démarre,
+   déclenchement après 1000 ms.
+6. **Réglages** : passer la tempo I> à 250 ms, refaire un défaut, comparer le
+   relevé.
 
 ## Tests
 
@@ -78,10 +90,10 @@ uv run pytest
 ```
 src/demirame/
     mapping.py      table des adresses Modbus (unique)
-    protection.py   programme de l'automate (seuils, tempos, verrouillage)
-    plc_main.py     automate : serveur Modbus + cycle de 100 ms
-    simulation.py   modèle du poste (disjoncteurs, courants, tension)
-    sim_main.py     simulation : client Modbus, pas de 100 ms
+    protection.py   programme de l'automate (I>, Io>, tempos, verrouillage, relevé des temps)
+    plc_main.py     automate : serveur Modbus + cycle de 20 ms
+    simulation.py   modèle du poste (disjoncteurs, courants par phase, défauts, tension)
+    sim_main.py     simulation : client Modbus, pas de 10 ms
 node-red/
     package.json    dépendances Node-RED
     flows.json      l'IHM (à ouvrir dans l'éditeur Node-RED)

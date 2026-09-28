@@ -4,7 +4,7 @@
         "type": "tab",
         "label": "IHM demi-rame",
         "disabled": false,
-        "info": "IHM du poste de conduite (ACR). Lit et écrit dans l'automate en Modbus TCP (port 5020)."
+        "info": "IHM du poste de conduite (ACR). Lit et écrit dans l'automate en Modbus TCP (127.0.0.1:5020)."
     },
     {
         "id": "modbus_automate",
@@ -39,7 +39,7 @@
     {
         "id": "ui_base",
         "type": "ui-base",
-        "name": "IHM demi-rame",
+        "name": "Poste source - demi-rame HTA",
         "path": "/dashboard",
         "appIcon": "",
         "includeClientData": true,
@@ -55,28 +55,28 @@
     {
         "id": "ui_theme",
         "type": "ui-theme",
-        "name": "Thème poste",
+        "name": "Thème supervision",
         "colors": {
-            "surface": "#1f3a5f",
-            "primary": "#1f6feb",
-            "bgPage": "#eeeeee",
+            "surface": "#263238",
+            "primary": "#1565c0",
+            "bgPage": "#dfe3e8",
             "groupBg": "#ffffff",
-            "groupOutline": "#cccccc"
+            "groupOutline": "#c5cbd3"
         },
         "sizes": {
-            "density": "default",
-            "pagePadding": "12px",
-            "groupGap": "12px",
+            "density": "compact",
+            "pagePadding": "10px",
+            "groupGap": "10px",
             "groupBorderRadius": "4px",
-            "widgetGap": "12px"
+            "widgetGap": "8px"
         }
     },
     {
-        "id": "page_acr",
+        "id": "page_conduite",
         "type": "ui-page",
-        "name": "Poste de conduite (ACR)",
+        "name": "Conduite",
         "ui": "ui_base",
-        "path": "/acr",
+        "path": "/conduite",
         "icon": "monitor-dashboard",
         "layout": "grid",
         "theme": "ui_theme",
@@ -108,12 +108,12 @@
         "disabled": "false"
     },
     {
-        "id": "page_banc",
+        "id": "page_releve",
         "type": "ui-page",
-        "name": "Banc de test",
+        "name": "Relevé des temporisations",
         "ui": "ui_base",
-        "path": "/banc",
-        "icon": "flask",
+        "path": "/releve",
+        "icon": "timer-outline",
         "layout": "grid",
         "theme": "ui_theme",
         "breakpoints": [
@@ -144,11 +144,83 @@
         "disabled": "false"
     },
     {
-        "id": "grp_synoptique",
+        "id": "page_reglages",
+        "type": "ui-page",
+        "name": "Réglages protections",
+        "ui": "ui_base",
+        "path": "/reglages",
+        "icon": "tune-vertical",
+        "layout": "grid",
+        "theme": "ui_theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 3,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "page_banc",
+        "type": "ui-page",
+        "name": "Banc de test",
+        "ui": "ui_base",
+        "path": "/banc",
+        "icon": "flask-outline",
+        "layout": "grid",
+        "theme": "ui_theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 4,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "grp_conduite",
         "type": "ui-group",
-        "name": "Synoptique et commandes",
-        "page": "page_acr",
-        "width": "6",
+        "name": "Schéma unifilaire et commande",
+        "page": "page_conduite",
+        "width": "12",
         "height": "1",
         "order": 1,
         "showTitle": true,
@@ -158,11 +230,11 @@
         "groupType": "default"
     },
     {
-        "id": "grp_courbes",
+        "id": "grp_tendances",
         "type": "ui-group",
-        "name": "Courbes",
-        "page": "page_acr",
-        "width": "6",
+        "name": "Tendances (2 dernières minutes)",
+        "page": "page_conduite",
+        "width": "12",
         "height": "1",
         "order": 2,
         "showTitle": true,
@@ -175,7 +247,7 @@
         "id": "grp_journal",
         "type": "ui-group",
         "name": "Journal des événements",
-        "page": "page_acr",
+        "page": "page_conduite",
         "width": "12",
         "height": "1",
         "order": 3,
@@ -186,11 +258,39 @@
         "groupType": "default"
     },
     {
+        "id": "grp_releve",
+        "type": "ui-group",
+        "name": "Relevé des temporisations",
+        "page": "page_releve",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "grp_reglages",
+        "type": "ui-group",
+        "name": "Réglages des protections des départs",
+        "page": "page_reglages",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
         "id": "grp_banc",
         "type": "ui-group",
-        "name": "Injection de défauts",
+        "name": "Injection de défauts francs",
         "page": "page_banc",
-        "width": "6",
+        "width": "12",
         "height": "1",
         "order": 1,
         "showTitle": true,
@@ -210,7 +310,7 @@
         "once": true,
         "onceDelay": "0.1",
         "topic": "",
-        "x": 140,
+        "x": 130,
         "y": 60,
         "wires": [
             [
@@ -223,14 +323,14 @@
         "type": "function",
         "z": "onglet_ihm",
         "name": "Table des adresses",
-        "func": "// Copie de src/demirame/mapping.py : les mêmes adresses côté IHM.\n// Si vous changez mapping.py, changez aussi ce tableau.\nglobal.set('adr', {\n    // Coils\n    CO_POSITION_DJ: 0,\n    CO_ACR_OUVERTURE: 30,\n    CO_ACR_FERMETURE: 40,\n    CO_ACR_ACQUITTEMENT: 50,\n    CO_SEUIL_PHASE: 60,\n    CO_SEUIL_HOMOPOLAIRE: 70,\n    CO_DECLENCHEMENT_PHASE: 80,\n    CO_DECLENCHEMENT_HOMOPOLAIRE: 90,\n    CO_VOYANT_ALARME: 100,\n    // Holding registers\n    HR_COURANT_DEPART: 0,\n    HR_COURANT_ARRIVEE: 3,\n    HR_COURANT_RESIDUEL: 4,\n    HR_TENSION_BARRE: 7,\n    HR_COMPTEUR_VIE: 20,\n    HR_DEFAUT_INJECTE: 100,\n    ECHELLE_TENSION: 10,\n});\nreturn null;\n",
+        "func": "// Copie de src/demirame/mapping.py : les mêmes adresses côté IHM.\n// Si vous changez mapping.py, changez aussi ce tableau.\n// Adresse = BLOC x numéro de bloc + décalage (bloc 0 = arrivée, 1 à 3 = départs)\nglobal.set('adr', {\n    BLOC: 20,\n    // Coils\n    CO_POSITION_DJ: 0,\n    CO_ORDRE_OUVERTURE: 1,\n    CO_ORDRE_FERMETURE: 2,\n    CO_ACR_OUVERTURE: 3,\n    CO_ACR_FERMETURE: 4,\n    CO_ACR_ACQUITTEMENT: 5,\n    CO_VOYANT_ALARME: 6,\n    CO_DEMARRAGE_PHASE: 10,\n    CO_DEMARRAGE_TERRE: 11,\n    CO_DECLENCHEMENT_PHASE: 12,\n    CO_DECLENCHEMENT_TERRE: 13,\n    // Holding registers\n    HR_I_L1: 0,\n    HR_IO: 3,\n    HR_TENSION_BARRE: 4,\n    HR_MOT_DE_VIE: 10,\n    HR_DUREE_CYCLE: 11,\n    HR_REGLAGE_SEUIL_PHASE: 5,\n    HR_TEMPS_PROTECTION: 10,\n    HR_DEFAUT_INJECTE: 15,\n    HR_ORIGINE_DECLENCHEMENT: 16,\n    ECHELLE_TENSION: 10,\n});\nreturn null;\n",
         "outputs": 0,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 350,
         "y": 60,
         "wires": []
     },
@@ -238,7 +338,7 @@
         "id": "lire_coils",
         "type": "modbus-read",
         "z": "onglet_ihm",
-        "name": "Lire coils 0..100",
+        "name": "Lire coils 0..79",
         "topic": "",
         "showStatusActivities": false,
         "logIOActivities": false,
@@ -247,8 +347,8 @@
         "unitid": "1",
         "dataType": "Coil",
         "adr": "0",
-        "quantity": "101",
-        "rate": "500",
+        "quantity": "80",
+        "rate": "250",
         "rateUnit": "ms",
         "delayOnStart": false,
         "startDelayTime": "",
@@ -257,7 +357,7 @@
         "ioFile": "",
         "useIOForPayload": false,
         "emptyMsgOnFail": false,
-        "x": 150,
+        "x": 140,
         "y": 140,
         "wires": [
             [
@@ -278,7 +378,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
+        "x": 360,
         "y": 140,
         "wires": []
     },
@@ -286,7 +386,7 @@
         "id": "lire_registres",
         "type": "modbus-read",
         "z": "onglet_ihm",
-        "name": "Lire registres 0..102",
+        "name": "Lire registres 0..79",
         "topic": "",
         "showStatusActivities": false,
         "logIOActivities": false,
@@ -295,8 +395,8 @@
         "unitid": "1",
         "dataType": "HoldingRegister",
         "adr": "0",
-        "quantity": "103",
-        "rate": "500",
+        "quantity": "80",
+        "rate": "250",
         "rateUnit": "ms",
         "delayOnStart": false,
         "startDelayTime": "",
@@ -305,8 +405,8 @@
         "ioFile": "",
         "useIOForPayload": false,
         "emptyMsgOnFail": false,
-        "x": 160,
-        "y": 220,
+        "x": 150,
+        "y": 240,
         "wires": [
             [
                 "fn_decodage"
@@ -319,18 +419,21 @@
         "type": "function",
         "z": "onglet_ihm",
         "name": "Décodage état",
-        "func": "// Transforme les valeurs Modbus brutes en un objet \"etat\" lisible.\n// Sorties : 1 = synoptique + banc de test, 2 = courbe I, 3 = courbe Io, 4 = journal\nconst a = global.get('adr');\nconst coils = flow.get('coils');\nconst hr = msg.payload;\nif (!a || !coils) return null;\n\nconst etat = {\n    tension: hr[a.HR_TENSION_BARRE] / a.ECHELLE_TENSION,\n    alarme: coils[a.CO_VOYANT_ALARME],\n    arrivee: { nom: 'Arrivée', ferme: coils[a.CO_POSITION_DJ + 3], courant: hr[a.HR_COURANT_ARRIVEE] },\n    departs: [],\n};\nfor (let n = 0; n < 3; n++) {\n    etat.departs.push({\n        nom: 'Départ ' + (n + 1),\n        ferme: coils[a.CO_POSITION_DJ + n],\n        courant: hr[a.HR_COURANT_DEPART + n],\n        io: hr[a.HR_COURANT_RESIDUEL + n],\n        seuilPhase: coils[a.CO_SEUIL_PHASE + n],\n        seuilHomopolaire: coils[a.CO_SEUIL_HOMOPOLAIRE + n],\n        declPhase: coils[a.CO_DECLENCHEMENT_PHASE + n],\n        declHomopolaire: coils[a.CO_DECLENCHEMENT_HOMOPOLAIRE + n],\n        defautInjecte: hr[a.HR_DEFAUT_INJECTE + n],\n    });\n}\n\n// Mot de vie : si le compteur de l'automate ne bouge plus, son cycle est arrêté.\nconst compteur = hr[a.HR_COMPTEUR_VIE];\netat.automateEnLigne = compteur !== context.get('compteur');\ncontext.set('compteur', compteur);\n\n// Courbes : un message par départ (topic = nom de la courbe)\nconst courbeI = etat.departs.map(d => ({ topic: d.nom, payload: d.courant }));\nconst courbeIo = etat.departs.map(d => ({ topic: d.nom, payload: d.io }));\n\n// Journal : on note les changements (fronts) depuis la lecture précédente\nconst avant = context.get('avant');\nconst journal = context.get('journal') || [];\nif (avant) {\n    const heure = new Date().toLocaleTimeString('fr-FR');\n    const tous = etat.departs.concat([etat.arrivee]);\n    tous.forEach((dj, i) => {\n        const prec = i < 3 ? avant.departs[i] : avant.arrivee;\n        if (dj.ferme !== prec.ferme) {\n            journal.unshift(heure + ' - ' + dj.nom + ' : DJ ' + (dj.ferme ? 'fermé' : 'ouvert'));\n        }\n        if (dj.declPhase && !prec.declPhase) {\n            journal.unshift(heure + ' - ' + dj.nom + ' : DÉCLENCHEMENT défaut phase');\n        }\n        if (dj.declHomopolaire && !prec.declHomopolaire) {\n            journal.unshift(heure + ' - ' + dj.nom + ' : DÉCLENCHEMENT défaut terre');\n        }\n    });\n    journal.splice(50);  // on garde les 50 derniers événements\n}\ncontext.set('avant', etat);\ncontext.set('journal', journal);\n\nreturn [{ payload: etat }, courbeI, courbeIo, { payload: journal }];\n",
-        "outputs": 4,
+        "func": "// Transforme les valeurs Modbus brutes en un objet \"etat\" lisible par l'IHM.\n// Sorties : 1 = état complet (pages), 2 = courbe I, 3 = courbe Io\nconst a = global.get('adr');\nconst co = flow.get('coils');\nconst hr = msg.payload;\nif (!a || !co) return null;\n\nconst adr = (bloc, decalage) => a.BLOC * bloc + decalage;\nconst t = new Date();\nconst heure = t.toLocaleTimeString('fr-FR') + '.' + String(t.getMilliseconds()).padStart(3, '0');\n\nfunction libellePhases(bits) {\n    const p = [];\n    if (bits & 1) p.push('L1');\n    if (bits & 2) p.push('L2');\n    if (bits & 4) p.push('L3');\n    if (bits & 8) p.push('Terre');\n    return p.length ? p.join('-') : '-';\n}\n\n// Lecture d'une cellule (bloc 0 = arrivée, 1 à 3 = départs)\nfunction cellule(bloc, nom) {\n    const i = adr(bloc, a.HR_I_L1);\n    const c = {\n        bloc: bloc,\n        nom: nom,\n        ferme: co[adr(bloc, a.CO_POSITION_DJ)],\n        courants: [hr[i], hr[i + 1], hr[i + 2]],\n        io: hr[adr(bloc, a.HR_IO)],\n    };\n    if (bloc > 0) {\n        c.demPhase = co[adr(bloc, a.CO_DEMARRAGE_PHASE)];\n        c.demTerre = co[adr(bloc, a.CO_DEMARRAGE_TERRE)];\n        c.declPhase = co[adr(bloc, a.CO_DECLENCHEMENT_PHASE)];\n        c.declTerre = co[adr(bloc, a.CO_DECLENCHEMENT_TERRE)];\n        const r = adr(bloc, a.HR_REGLAGE_SEUIL_PHASE);\n        c.reglages = { seuilPhase: hr[r], tempoPhase: hr[r + 1], seuilTerre: hr[r + 2], tempoTerre: hr[r + 3] };\n        const m = adr(bloc, a.HR_TEMPS_PROTECTION);\n        c.releve = {\n            tProt: hr[m], tOuv: hr[m + 1], tElim: hr[m + 2], phases: hr[m + 3], nb: hr[m + 4],\n            origine: hr[adr(bloc, a.HR_ORIGINE_DECLENCHEMENT)],\n        };\n        c.defautInjecte = hr[adr(bloc, a.HR_DEFAUT_INJECTE)];\n    }\n    return c;\n}\n\nconst etat = {\n    heure: heure,\n    tension: hr[adr(0, a.HR_TENSION_BARRE)] / a.ECHELLE_TENSION,\n    alarme: co[adr(0, a.CO_VOYANT_ALARME)],\n    dureeCycle: hr[adr(0, a.HR_DUREE_CYCLE)],\n    arrivee: cellule(0, 'Arrivée'),\n    departs: [1, 2, 3].map(b => cellule(b, 'Départ ' + b)),\n};\n\n// Mot de vie : si le compteur de l'automate ne bouge plus, son cycle est arrêté.\nconst vie = hr[adr(0, a.HR_MOT_DE_VIE)];\netat.automateEnLigne = vie !== context.get('vie');\ncontext.set('vie', vie);\n\n// ---------------- Journal des événements (changements d'état) ----------------\nconst journal = flow.get('journal') || [];\nfunction noter(texte, niveau) { journal.unshift({ heure: heure, texte: texte, niveau: niveau }); }\n\nconst avant = context.get('avant');\nif (avant) {\n    [etat.arrivee].concat(etat.departs).forEach((c, i) => {\n        // Notés dans l'ordre chronologique : démarrage, déclenchement, puis manoeuvre du DJ\n        const p = i === 0 ? avant.arrivee : avant.departs[i - 1];\n        if (i > 0) {\n            if (c.demPhase && !p.demPhase) noter(c.nom + ' : démarrage I>', 'alerte');\n            if (c.demTerre && !p.demTerre) noter(c.nom + ' : démarrage Io>', 'alerte');\n            if (c.declPhase && !p.declPhase) noter(c.nom + ' : DÉCLENCHEMENT I>', 'alarme');\n            if (c.declTerre && !p.declTerre) noter(c.nom + ' : DÉCLENCHEMENT Io>', 'alarme');\n        }\n        if (c.ferme !== p.ferme) noter(c.nom + ' : disjoncteur ' + (c.ferme ? 'FERMÉ' : 'OUVERT'), 'info');\n        if (i === 0) return;\n        if (!c.declPhase && !c.declTerre && (p.declPhase || p.declTerre)) noter(c.nom + ' : alarmes acquittées', 'info');\n        if (c.defautInjecte !== p.defautInjecte) {\n            noter(c.nom + ' : banc de test, ' + (c.defautInjecte ? 'défaut ' + libellePhases(c.defautInjecte) + ' appliqué' : 'défaut supprimé'), 'test');\n        }\n        const r = c.reglages, q = p.reglages;\n        if (r.seuilPhase !== q.seuilPhase || r.tempoPhase !== q.tempoPhase || r.seuilTerre !== q.seuilTerre || r.tempoTerre !== q.tempoTerre) {\n            noter(c.nom + ' : nouveaux réglages I> ' + r.seuilPhase + ' A / ' + r.tempoPhase + ' ms, Io> ' + r.seuilTerre + ' A / ' + r.tempoTerre + ' ms', 'info');\n        }\n    });\n}\njournal.splice(200);  // on garde les 200 derniers événements\nflow.set('journal', journal);\n\n// ---------------- Historique des relevés de temporisation ----------------\n// Un enregistrement par déclenchement, dès que le DJ est ouvert (t élimination connu).\nconst historique = flow.get('historique') || [];\nconst dejaNotes = context.get('dejaNotes') || [null, null, null];\netat.departs.forEach((c, i) => {\n    const r = c.releve;\n    if (dejaNotes[i] === null) { dejaNotes[i] = r.nb; return; }  // au démarrage de l'IHM\n    if (r.nb !== dejaNotes[i] && r.tElim > 0) {\n        const parPhase = (r.origine & 1) !== 0;\n        const reglage = parPhase ? c.reglages.tempoPhase : c.reglages.tempoTerre;\n        historique.unshift({\n            heure: heure,\n            depart: c.nom,\n            phases: libellePhases(r.phases),\n            protection: ['-', 'I>', 'Io>', 'I> et Io>'][r.origine] || '-',\n            reglage: reglage,\n            tProt: r.tProt,\n            ecart: r.tProt - reglage,\n            tOuv: r.tOuv,\n            tElim: r.tElim,\n        });\n        noter(c.nom + ' : relevé t protection ' + r.tProt + ' ms, t ouverture DJ ' + r.tOuv + ' ms, t élimination ' + r.tElim + ' ms', 'info');\n        dejaNotes[i] = r.nb;\n    }\n});\ncontext.set('dejaNotes', dejaNotes);\nflow.set('historique', historique);\n\ncontext.set('avant', JSON.parse(JSON.stringify(etat)));\netat.journal = journal.slice(0, 100);\netat.historique = historique;\n\n// Courbes : un message par départ (topic = nom de la courbe)\nconst courbeI = etat.departs.map(d => ({ topic: d.nom, payload: Math.max(...d.courants) }));\nconst courbeIo = etat.departs.map(d => ({ topic: d.nom, payload: d.io }));\n\nreturn [{ payload: etat }, courbeI, courbeIo];\n",
+        "outputs": 3,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 220,
+        "x": 380,
+        "y": 240,
         "wires": [
             [
-                "tpl_synoptique",
+                "tpl_conduite",
+                "tpl_journal",
+                "tpl_releve",
+                "tpl_reglages",
                 "tpl_banc"
             ],
             [
@@ -338,32 +441,231 @@
             ],
             [
                 "courbe_io"
-            ],
-            [
-                "tpl_journal"
             ]
         ]
     },
     {
-        "id": "tpl_synoptique",
+        "id": "tpl_conduite",
         "type": "ui-template",
         "z": "onglet_ihm",
-        "group": "grp_synoptique",
+        "group": "grp_conduite",
         "page": "",
         "ui": "",
-        "name": "Synoptique",
+        "name": "Conduite",
         "order": 1,
         "width": 0,
         "height": 0,
         "head": "",
-        "format": "<template>\n  <div v-if=\"etat\" class=\"syno\">\n    <div class=\"bandeau\">\n      <span :class=\"['pastille', enLigne ? 'ok' : 'ko']\">{{ enLigne ? 'Automate en ligne' : 'Communication perdue' }}</span>\n      <span :class=\"['pastille', etat.alarme ? 'ko clignote' : 'ok']\">{{ etat.alarme ? 'ALARME' : 'Aucune alarme' }}</span>\n      <span class=\"tension\">U barre : {{ etat.tension.toFixed(1) }} kV</span>\n    </div>\n\n    <svg viewBox=\"0 0 600 330\" class=\"schema\">\n      <!-- Arrivée -->\n      <line x1=\"300\" y1=\"10\" x2=\"300\" y2=\"100\" :class=\"etat.arrivee.ferme ? 'cable-on' : 'cable-off'\" />\n      <rect x=\"285\" y=\"35\" width=\"30\" height=\"30\" rx=\"3\" :class=\"couleurDj(etat.arrivee)\" />\n      <text x=\"325\" y=\"55\" class=\"nom\">Arrivée  {{ etat.arrivee.courant }} A</text>\n\n      <!-- Jeu de barres -->\n      <line x1=\"60\" y1=\"100\" x2=\"540\" y2=\"100\" :class=\"etat.tension > 1 ? 'barre-on' : 'barre-off'\" />\n      <text x=\"60\" y=\"92\" class=\"petit\">Jeu de barres 20 kV</text>\n\n      <!-- Départs -->\n      <g v-for=\"(d, n) in etat.departs\" :key=\"n\">\n        <line :x1=\"x(n)\" y1=\"100\" :x2=\"x(n)\" y2=\"250\" :class=\"d.ferme && etat.tension > 1 ? 'cable-on' : 'cable-off'\" />\n        <rect :x=\"x(n) - 15\" y=\"150\" width=\"30\" height=\"30\" rx=\"3\" :class=\"couleurDj(d)\" />\n        <text :x=\"x(n)\" y=\"272\" text-anchor=\"middle\" class=\"nom\">{{ d.nom }}</text>\n        <text :x=\"x(n)\" y=\"292\" text-anchor=\"middle\" :class=\"d.seuilPhase ? 'mesure alerte' : 'mesure'\">I = {{ d.courant }} A</text>\n        <text :x=\"x(n)\" y=\"310\" text-anchor=\"middle\" :class=\"d.seuilHomopolaire ? 'mesure alerte' : 'mesure'\">Io = {{ d.io }} A</text>\n        <text v-if=\"d.declPhase\" :x=\"x(n) + 22\" y=\"160\" class=\"alarme\">Défaut phase</text>\n        <text v-if=\"d.declHomopolaire\" :x=\"x(n) + 22\" y=\"178\" class=\"alarme\">Défaut terre</text>\n      </g>\n    </svg>\n\n    <div class=\"commandes\">\n      <div v-for=\"(dj, i) in disjoncteurs\" :key=\"i\" class=\"ligne\">\n        <span class=\"etiquette\">{{ dj.nom }}</span>\n        <v-btn size=\"small\" color=\"red\" variant=\"flat\" :disabled=\"!dj.ferme\" @click=\"envoyer('ouvrir', i)\">Ouvrir</v-btn>\n        <v-btn size=\"small\" color=\"green\" variant=\"flat\" :disabled=\"dj.ferme\" @click=\"envoyer('fermer', i)\">Fermer</v-btn>\n      </div>\n      <v-btn class=\"acquit\" color=\"orange\" variant=\"flat\" @click=\"envoyer('acquitter', 0)\">Acquitter les alarmes</v-btn>\n    </div>\n  </div>\n  <div v-else>En attente des données de l'automate...</div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return { maintenant: Date.now(), dernierMessage: 0, minuterie: null }\n  },\n  computed: {\n    etat() { return this.msg && this.msg.payload },\n    disjoncteurs() { return this.etat.departs.concat([this.etat.arrivee]) },\n    // En ligne si on reçoit des données récentes ET que le mot de vie bouge\n    enLigne() { return this.etat.automateEnLigne && this.maintenant - this.dernierMessage < 2000 }\n  },\n  watch: {\n    msg() { this.dernierMessage = Date.now() }\n  },\n  mounted() {\n    this.minuterie = setInterval(() => { this.maintenant = Date.now() }, 500)\n  },\n  unmounted() {\n    clearInterval(this.minuterie)\n  },\n  methods: {\n    x(n) { return 150 + n * 150 },\n    // Convention de la fiche : vert = fermé, rouge = ouvert\n    couleurDj(dj) { return dj.ferme ? 'dj-ferme' : 'dj-ouvert' },\n    envoyer(commande, dj) { this.send({ payload: { commande: commande, dj: dj } }) }\n  }\n}\n</script>\n\n<style scoped>\n.syno { width: 100%; }\n.bandeau { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }\n.pastille { padding: 2px 10px; border-radius: 12px; color: white; font-weight: bold; }\n.ok { background: #2e7d32; }\n.ko { background: #c62828; }\n.clignote { animation: clignote 1s ease-in-out infinite alternate; }\n@keyframes clignote { to { opacity: 0.35; } }\n.tension { font-weight: bold; }\n.schema { width: 100%; max-width: 600px; }\n.barre-on { stroke: #1565c0; stroke-width: 8; }\n.barre-off { stroke: #9e9e9e; stroke-width: 8; }\n.cable-on { stroke: #1565c0; stroke-width: 3; }\n.cable-off { stroke: #9e9e9e; stroke-width: 3; }\n.dj-ferme { fill: #2e7d32; stroke: #1b5e20; stroke-width: 2; }\n.dj-ouvert { fill: #c62828; stroke: #8e0000; stroke-width: 2; }\n.nom { font-size: 14px; font-weight: bold; fill: currentColor; }\n.petit { font-size: 12px; fill: #616161; }\n.mesure { font-size: 13px; fill: currentColor; }\n.alerte { fill: #e65100; font-weight: bold; }\n.alarme { font-size: 12px; fill: #c62828; font-weight: bold; }\n.commandes { display: flex; flex-direction: column; gap: 6px; }\n.ligne { display: flex; gap: 8px; align-items: center; }\n.etiquette { width: 80px; }\n.acquit { margin-top: 6px; align-self: flex-start; }\n</style>\n",
+        "format": "<template>\n  <div v-if=\"etat\" class=\"conduite\">\n    <!-- Bandeau d'état -->\n    <div class=\"bandeau\">\n      <div :class=\"['etat', enLigne ? 'ok' : 'ko']\"><span class=\"led\"></span>{{ enLigne ? 'Automate en ligne' : 'Communication perdue' }}</div>\n      <div class=\"etat neutre\">Cycle automate : {{ etat.dureeCycle }} ms</div>\n      <div :class=\"['etat', tensionBasse ? 'ko' : 'neutre']\">U barre : <b>&nbsp;{{ etat.tension.toFixed(1) }} kV</b></div>\n      <div :class=\"['etat', etat.alarme ? 'ko clignote' : 'ok']\"><span class=\"led\"></span>{{ etat.alarme ? 'ALARME' : 'Aucune alarme' }}</div>\n      <div class=\"etat neutre horloge\">{{ etat.heure.slice(0, 8) }}</div>\n    </div>\n\n    <div class=\"corps\">\n      <!-- Schéma unifilaire -->\n      <svg viewBox=\"0 0 640 440\" class=\"schema\">\n        <!-- Transformateur HTB/HTA -->\n        <circle cx=\"320\" cy=\"24\" r=\"14\" class=\"transfo\" />\n        <circle cx=\"320\" cy=\"44\" r=\"14\" class=\"transfo\" />\n        <text x=\"342\" y=\"30\" class=\"petit\">TR HTB/HTA 63/20 kV</text>\n        <line x1=\"320\" y1=\"58\" x2=\"320\" y2=\"88\" class=\"cable-on\" />\n\n        <!-- Arrivée -->\n        <g class=\"cliquable\" @click=\"selectionner(0)\">\n          <rect x=\"302\" y=\"88\" width=\"36\" height=\"36\" rx=\"3\" :class=\"classeDj(etat.arrivee, 0)\" />\n          <text x=\"320\" y=\"112\" text-anchor=\"middle\" class=\"lettre\">{{ etat.arrivee.ferme ? 'F' : 'O' }}</text>\n        </g>\n        <line x1=\"320\" y1=\"124\" x2=\"320\" y2=\"150\" :class=\"etat.tension > 1 ? 'cable-on' : 'cable-off'\" />\n        <text x=\"350\" y=\"98\" class=\"nom\">Arrivée</text>\n        <text x=\"350\" y=\"115\" class=\"mesure\">I = {{ etat.arrivee.courants.join(' / ') }} A</text>\n        <text x=\"350\" y=\"131\" class=\"mesure\">Io = {{ etat.arrivee.io }} A</text>\n\n        <!-- Jeu de barres -->\n        <line x1=\"50\" y1=\"150\" x2=\"590\" y2=\"150\" :class=\"etat.tension > 1 ? 'barre-on' : 'barre-off'\" />\n        <text x=\"50\" y=\"142\" class=\"petit\">Jeu de barres HTA 20 kV</text>\n\n        <!-- Départs -->\n        <g v-for=\"(d, n) in etat.departs\" :key=\"n\">\n          <line :x1=\"x(n)\" y1=\"150\" :x2=\"x(n)\" y2=\"186\" :class=\"etat.tension > 1 ? 'cable-on' : 'cable-off'\" />\n          <g class=\"cliquable\" @click=\"selectionner(d.bloc)\">\n            <rect :x=\"x(n) - 18\" y=\"186\" width=\"36\" height=\"36\" rx=\"3\" :class=\"classeDj(d, d.bloc)\" />\n            <text :x=\"x(n)\" y=\"210\" text-anchor=\"middle\" class=\"lettre\">{{ d.ferme ? 'F' : 'O' }}</text>\n          </g>\n          <line :x1=\"x(n)\" y1=\"222\" :x2=\"x(n)\" y2=\"285\" :class=\"d.ferme && etat.tension > 1 ? 'cable-on' : 'cable-off'\" />\n          <polygon :points=\"fleche(n)\" :class=\"d.ferme && etat.tension > 1 ? 'fleche-on' : 'fleche-off'\" />\n\n          <!-- Voyants de la protection -->\n          <circle :cx=\"x(n) + 34\" cy=\"195\" r=\"6\" :class=\"voyant(d.demPhase, d.declPhase)\" />\n          <text :x=\"x(n) + 44\" y=\"199\" class=\"petit\">I&gt;</text>\n          <circle :cx=\"x(n) + 34\" cy=\"213\" r=\"6\" :class=\"voyant(d.demTerre, d.declTerre)\" />\n          <text :x=\"x(n) + 44\" y=\"217\" class=\"petit\">Io&gt;</text>\n\n          <!-- Mesures -->\n          <text :x=\"x(n)\" y=\"312\" text-anchor=\"middle\" class=\"nom\">{{ d.nom }}</text>\n          <rect :x=\"x(n) - 62\" y=\"320\" width=\"124\" height=\"96\" rx=\"4\" class=\"cadre\" />\n          <text v-for=\"(i, p) in d.courants\" :key=\"p\" :x=\"x(n) - 52\" :y=\"340 + 18 * p\"\n                :class=\"i > d.reglages.seuilPhase ? 'mesure depasse' : 'mesure'\">I L{{ p + 1 }} = {{ i }} A</text>\n          <text :x=\"x(n) - 52\" y=\"394\" :class=\"d.io > d.reglages.seuilTerre ? 'mesure depasse' : 'mesure'\">Io = {{ d.io }} A</text>\n          <text :x=\"x(n) - 52\" y=\"410\" class=\"petit\">{{ d.defautInjecte ? 'défaut simulé' : '' }}</text>\n        </g>\n      </svg>\n\n      <!-- Panneau de commande et alarmes -->\n      <div class=\"panneau\">\n        <div class=\"bloc\">\n          <div class=\"titre\">Commande (sélection puis exécution)</div>\n          <div v-if=\"selection === null\" class=\"aide\">Cliquez sur un disjoncteur du schéma pour le sélectionner.</div>\n          <div v-else>\n            <div class=\"selection\">{{ celluleSel.nom }} : disjoncteur <b>{{ celluleSel.ferme ? 'FERMÉ' : 'OUVERT' }}</b></div>\n            <div v-if=\"verrouilleSel\" class=\"verrou\">Départ verrouillé après déclenchement : l'automate refusera la fermeture tant que l'alarme n'est pas acquittée.</div>\n            <div class=\"boutons\">\n              <v-btn color=\"red-darken-2\" :disabled=\"!celluleSel.ferme\" @click=\"executer('ouvrir')\">Ouvrir</v-btn>\n              <v-btn color=\"green-darken-2\" :disabled=\"celluleSel.ferme\" @click=\"executer('fermer')\">Fermer</v-btn>\n              <v-btn variant=\"outlined\" @click=\"selection = null\">Annuler</v-btn>\n            </div>\n            <div class=\"aide\">La sélection s'annule seule après 15 s.</div>\n          </div>\n        </div>\n\n        <div class=\"bloc\">\n          <div class=\"titre\">Alarmes actives ({{ alarmes.length }})</div>\n          <div v-if=\"alarmes.length === 0\" class=\"aide\">Aucune alarme.</div>\n          <div v-for=\"(al, i) in alarmes\" :key=\"i\" :class=\"['ligne-alarme', al.niveau]\">{{ al.texte }}</div>\n          <v-btn class=\"acquit\" color=\"orange-darken-3\" :disabled=\"!etat.alarme\" @click=\"envoyer({ commande: 'acquitter' })\">Acquitter les alarmes</v-btn>\n        </div>\n\n        <div class=\"bloc legende\">\n          <div class=\"titre\">Légende</div>\n          <div><span class=\"carre ferme\"></span> DJ fermé (F) <span class=\"carre ouvert\"></span> DJ ouvert (O)</div>\n          <div><span class=\"rond dem\"></span> démarrage (tempo en cours) <span class=\"rond decl\"></span> déclenché</div>\n          <div><span class=\"texte-depasse\">valeur</span> au-dessus du seuil réglé</div>\n        </div>\n      </div>\n    </div>\n  </div>\n  <div v-else class=\"aide\">En attente des données de l'automate...</div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return { maintenant: Date.now(), dernierMessage: 0, minuterie: null, selection: null, heureSelection: 0 }\n  },\n  computed: {\n    etat() { return this.msg && this.msg.payload },\n    // En ligne si on reçoit des données récentes ET que le mot de vie bouge\n    enLigne() { return this.etat.automateEnLigne && this.maintenant - this.dernierMessage < 2000 },\n    tensionBasse() { return this.etat.arrivee.ferme && this.etat.tension < 18 },\n    cellules() { return [this.etat.arrivee].concat(this.etat.departs) },\n    celluleSel() { return this.cellules[this.selection] },\n    verrouilleSel() { const c = this.celluleSel; return c.bloc > 0 && (c.declPhase || c.declTerre) },\n    alarmes() {\n      const liste = []\n      if (!this.enLigne) liste.push({ texte: 'Communication avec l\\'automate perdue', niveau: 'alarme' })\n      if (this.tensionBasse) liste.push({ texte: 'Tension jeu de barres basse (creux de tension)', niveau: 'alerte' })\n      this.etat.departs.forEach(d => {\n        const phases = this.libellePhases(d.releve.phases)\n        if (d.declPhase) liste.push({ texte: d.nom + ' : déclenchement I> (' + phases + ')', niveau: 'alarme' })\n        if (d.declTerre) liste.push({ texte: d.nom + ' : déclenchement Io> (' + phases + ')', niveau: 'alarme' })\n        if (d.demPhase && !d.declPhase) liste.push({ texte: d.nom + ' : démarrage I> en cours', niveau: 'alerte' })\n        if (d.demTerre && !d.declTerre) liste.push({ texte: d.nom + ' : démarrage Io> en cours', niveau: 'alerte' })\n      })\n      return liste\n    }\n  },\n  watch: {\n    msg() { this.dernierMessage = Date.now() }\n  },\n  mounted() {\n    this.minuterie = setInterval(() => {\n      this.maintenant = Date.now()\n      if (this.selection !== null && this.maintenant - this.heureSelection > 15000) this.selection = null\n    }, 500)\n  },\n  unmounted() { clearInterval(this.minuterie) },\n  methods: {\n    x(n) { return 160 + n * 160 },\n    fleche(n) { const x = this.x(n); return (x - 7) + ',285 ' + (x + 7) + ',285 ' + x + ',297' },\n    classeDj(cellule, bloc) {\n      return ['dj', cellule.ferme ? 'dj-ferme' : 'dj-ouvert', this.selection === bloc ? 'dj-selection' : '']\n    },\n    voyant(demarrage, declenchement) {\n      return declenchement ? 'voyant decl' : (demarrage ? 'voyant dem' : 'voyant')\n    },\n    libellePhases(bits) {\n      const p = []\n      if (bits & 1) p.push('L1')\n      if (bits & 2) p.push('L2')\n      if (bits & 4) p.push('L3')\n      if (bits & 8) p.push('Terre')\n      return p.length ? p.join('-') : '-'\n    },\n    selectionner(bloc) { this.selection = bloc; this.heureSelection = Date.now() },\n    executer(commande) {\n      this.envoyer({ commande: commande, bloc: this.selection })\n      this.selection = null\n    },\n    envoyer(commande) { this.send({ payload: commande }) }\n  }\n}\n</script>\n\n<style scoped>\n.conduite { width: 100%; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }\n.bandeau { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }\n.etat { display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 4px; font-size: 14px; border: 1px solid #b0b6bd; }\n.etat.ok { background: #e8f5e9; border-color: #2e7d32; color: #1b5e20; }\n.etat.ko { background: #ffebee; border-color: #c62828; color: #b71c1c; font-weight: bold; }\n.etat.neutre { background: #eceff1; color: #263238; }\n.etat .led { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }\n.horloge { margin-left: auto; font-family: monospace; }\n.clignote { animation: clignote 0.8s ease-in-out infinite alternate; }\n@keyframes clignote { to { opacity: 0.4; } }\n.corps { display: flex; flex-wrap: wrap; gap: 12px; }\n.schema { flex: 1 1 520px; max-width: 760px; background: #f7f8f9; border: 1px solid #cfd4da; border-radius: 4px; }\n.panneau { flex: 1 1 280px; display: flex; flex-direction: column; gap: 10px; }\n.bloc { border: 1px solid #cfd4da; border-radius: 4px; padding: 10px; background: #fafbfc; }\n.titre { font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #37474f; text-transform: uppercase; letter-spacing: 0.03em; }\n.aide { font-size: 13px; color: #607d8b; margin: 4px 0; }\n.selection { font-size: 15px; margin-bottom: 6px; }\n.verrou { font-size: 13px; color: #b71c1c; background: #ffebee; padding: 4px 8px; border-radius: 3px; margin-bottom: 6px; }\n.boutons { display: flex; gap: 8px; flex-wrap: wrap; }\n.ligne-alarme { font-size: 13px; padding: 4px 8px; margin-bottom: 4px; border-left: 4px solid; border-radius: 2px; }\n.ligne-alarme.alarme { border-color: #c62828; background: #ffebee; color: #b71c1c; font-weight: 600; }\n.ligne-alarme.alerte { border-color: #ef6c00; background: #fff3e0; color: #e65100; }\n.acquit { margin-top: 8px; }\n.legende div { font-size: 12px; color: #455a64; margin: 3px 0; display: flex; align-items: center; gap: 6px; }\n.carre { display: inline-block; width: 12px; height: 12px; border-radius: 2px; }\n.carre.ferme { background: #2e7d32; }\n.carre.ouvert { background: #fff; border: 2px solid #c62828; }\n.rond { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }\n.rond.dem { background: #ffa000; }\n.rond.decl { background: #d32f2f; }\n.texte-depasse { color: #e65100; font-weight: bold; }\n/* Schéma */\n.transfo { fill: none; stroke: #455a64; stroke-width: 2; }\n.barre-on { stroke: #1565c0; stroke-width: 7; }\n.barre-off { stroke: #9e9e9e; stroke-width: 7; }\n.cable-on { stroke: #1565c0; stroke-width: 3; }\n.cable-off { stroke: #9e9e9e; stroke-width: 3; }\n.fleche-on { fill: #1565c0; }\n.fleche-off { fill: #9e9e9e; }\n.dj { stroke-width: 3; }\n.dj-ferme { fill: #2e7d32; stroke: #1b5e20; }\n.dj-ouvert { fill: #ffffff; stroke: #c62828; }\n.dj-selection { stroke: #ffab00; stroke-width: 5; stroke-dasharray: 6 3; }\n.lettre { font-size: 15px; font-weight: bold; fill: #263238; pointer-events: none; }\n.dj-ferme + .lettre { fill: #ffffff; }\n.cliquable { cursor: pointer; }\n.voyant { fill: #cfd8dc; stroke: #90a4ae; }\n.voyant.dem { fill: #ffa000; stroke: #e65100; }\n.voyant.decl { fill: #d32f2f; stroke: #8e0000; }\n.cadre { fill: #ffffff; stroke: #cfd4da; }\n.nom { font-size: 14px; font-weight: 600; fill: #263238; }\n.mesure { font-size: 13px; fill: #263238; font-family: monospace; }\n.depasse { fill: #e65100; font-weight: bold; }\n.petit { font-size: 11px; fill: #607d8b; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 660,
+        "y": 160,
+        "wires": [
+            [
+                "fn_commandes"
+            ]
+        ]
+    },
+    {
+        "id": "courbe_i",
+        "type": "ui-chart",
+        "z": "onglet_ihm",
+        "group": "grp_tendances",
+        "name": "Courant de phase maximal des départs (A)",
+        "label": "Courant de phase maximal des départs (A)",
+        "order": 1,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "A",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "false",
+        "pointRadius": 0,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 4,
+        "className": "",
+        "interpolation": "linear",
+        "x": 700,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "courbe_io",
+        "type": "ui-chart",
+        "z": "onglet_ihm",
+        "group": "grp_tendances",
+        "name": "Courant résiduel Io des départs (A)",
+        "label": "Courant résiduel Io des départs (A)",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "A",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "false",
+        "pointRadius": 0,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "colors": [
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#d62728",
+            "#9467bd",
+            "#8c564b",
+            "#e377c2",
+            "#7f7f7f",
+            "#bcbd22"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 4,
+        "className": "",
+        "interpolation": "linear",
+        "x": 700,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "tpl_journal",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_journal",
+        "page": "",
+        "ui": "",
+        "name": "Journal",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div class=\"journal-cadre\">\n    <div class=\"outils\">\n      <span class=\"aide\">Heure de l'IHM (lecture de l'automate toutes les 250 ms). Les durées précises sont dans le relevé des temporisations.</span>\n      <v-btn size=\"small\" variant=\"outlined\" @click=\"send({ payload: { commande: 'effacerJournal' } })\">Effacer</v-btn>\n    </div>\n    <div class=\"journal\">\n      <div v-if=\"!lignes.length\" class=\"aide\">Aucun événement.</div>\n      <div v-for=\"(l, i) in lignes\" :key=\"i\" :class=\"['ligne', l.niveau]\">\n        <span class=\"heure\">{{ l.heure }}</span><span>{{ l.texte }}</span>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  computed: {\n    lignes() { return (this.msg && this.msg.payload && this.msg.payload.journal) || [] }\n  }\n}\n</script>\n\n<style scoped>\n.outils { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }\n.aide { font-size: 12px; color: #607d8b; }\n.journal { max-height: 280px; overflow-y: auto; font-family: monospace; font-size: 13px; border: 1px solid #cfd4da; border-radius: 4px; text-align: left; }\n.ligne { display: flex; justify-content: flex-start; gap: 14px; padding: 2px 8px; border-bottom: 1px solid #eceff1; }\n.heure { color: #607d8b; min-width: 95px; }\n.ligne.alarme { color: #b71c1c; font-weight: bold; background: #ffebee; }\n.ligne.alerte { color: #e65100; }\n.ligne.test { color: #6a1b9a; }\n</style>\n",
         "storeOutMessages": true,
         "passthru": false,
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
         "x": 650,
-        "y": 180,
+        "y": 200,
+        "wires": [
+            [
+                "fn_commandes"
+            ]
+        ]
+    },
+    {
+        "id": "tpl_releve",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_releve",
+        "page": "",
+        "ui": "",
+        "name": "Relevé des temporisations",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div v-if=\"etat\" class=\"releve\">\n    <div class=\"titre\">Dernier déclenchement de chaque départ</div>\n    <table class=\"tableau\">\n      <thead>\n        <tr>\n          <th>Départ</th><th>Phases vues</th><th>Protection</th><th>Réglage t</th>\n          <th>t protection</th><th>Écart</th><th>t ouverture DJ</th><th>t élimination</th><th>Nb déclench.</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(d, n) in etat.departs\" :key=\"n\">\n          <td><b>{{ d.nom }}</b></td>\n          <template v-if=\"d.releve.nb > 0\">\n            <td>{{ libellePhases(d.releve.phases) }}</td>\n            <td>{{ protection(d.releve.origine) }}</td>\n            <td>{{ reglage(d) }} ms</td>\n            <td class=\"fort\">{{ d.releve.tProt }} ms</td>\n            <td :class=\"classeEcart(d.releve.tProt - reglage(d))\">{{ signe(d.releve.tProt - reglage(d)) }} ms</td>\n            <td>{{ d.releve.tElim ? d.releve.tOuv + ' ms' : 'en cours' }}</td>\n            <td class=\"fort\">{{ d.releve.tElim ? d.releve.tElim + ' ms' : 'en cours' }}</td>\n            <td>{{ d.releve.nb }}</td>\n          </template>\n          <td v-else colspan=\"8\" class=\"vide\">Aucun déclenchement depuis le démarrage de l'automate</td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"note\">\n      Temps mesurés par l'automate, à la résolution de son cycle (actuellement {{ etat.dureeCycle }} ms).\n      <b>t = 0</b> au premier cycle où un seuil est dépassé.\n      <b>t protection</b> : jusqu'à l'ordre de déclenchement (doit égaler la temporisation réglée).\n      <b>t ouverture DJ</b> : de l'ordre au retour « disjoncteur ouvert ».\n      <b>t élimination</b> : durée totale du défaut vu par la protection.\n    </div>\n\n    <div class=\"entete-historique\">\n      <div class=\"titre\">Historique des déclenchements ({{ etat.historique.length }})</div>\n      <div class=\"boutons\">\n        <v-btn size=\"small\" color=\"primary\" :disabled=\"!etat.historique.length\" @click=\"exporter\">Exporter en CSV</v-btn>\n        <v-btn size=\"small\" variant=\"outlined\" :disabled=\"!etat.historique.length\" @click=\"send({ payload: { commande: 'effacerHistorique' } })\">Effacer</v-btn>\n      </div>\n    </div>\n    <table class=\"tableau\">\n      <thead>\n        <tr>\n          <th>Heure (IHM)</th><th>Départ</th><th>Phases vues</th><th>Protection</th><th>Réglage t</th>\n          <th>t protection</th><th>Écart</th><th>t ouverture DJ</th><th>t élimination</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-if=\"!etat.historique.length\"><td colspan=\"9\" class=\"vide\">Aucun enregistrement. Provoquez un défaut depuis le banc de test.</td></tr>\n        <tr v-for=\"(h, i) in etat.historique\" :key=\"i\">\n          <td class=\"mono\">{{ h.heure }}</td><td>{{ h.depart }}</td><td>{{ h.phases }}</td><td>{{ h.protection }}</td>\n          <td>{{ h.reglage }} ms</td><td class=\"fort\">{{ h.tProt }} ms</td>\n          <td :class=\"classeEcart(h.ecart)\">{{ signe(h.ecart) }} ms</td>\n          <td>{{ h.tOuv }} ms</td><td class=\"fort\">{{ h.tElim }} ms</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n  <div v-else class=\"vide\">En attente des données de l'automate...</div>\n</template>\n\n<script>\nexport default {\n  computed: {\n    etat() { return this.msg && this.msg.payload }\n  },\n  methods: {\n    libellePhases(bits) {\n      const p = []\n      if (bits & 1) p.push('L1')\n      if (bits & 2) p.push('L2')\n      if (bits & 4) p.push('L3')\n      if (bits & 8) p.push('Terre')\n      return p.length ? p.join('-') : '-'\n    },\n    protection(origine) { return ['-', 'I>', 'Io>', 'I> et Io>'][origine] || '-' },\n    reglage(d) { return (d.releve.origine & 1) ? d.reglages.tempoPhase : d.reglages.tempoTerre },\n    signe(v) { return (v > 0 ? '+' : '') + v },\n    // Écart acceptable : jusqu'à 2 cycles de l'automate\n    classeEcart(v) { return Math.abs(v) <= 2 * Math.max(this.etat.dureeCycle, 20) ? 'ecart-ok' : 'ecart-ko' },\n    exporter() {\n      const entetes = ['Heure', 'Départ', 'Phases vues', 'Protection', 'Réglage t (ms)', 't protection (ms)', 'Écart (ms)', 't ouverture DJ (ms)', 't élimination (ms)']\n      const lignes = this.etat.historique.map(h => [h.heure, h.depart, h.phases, h.protection, h.reglage, h.tProt, h.ecart, h.tOuv, h.tElim])\n      const csv = '﻿' + [entetes].concat(lignes).map(l => l.join(';')).join('\\r\\n')\n      const lien = document.createElement('a')\n      lien.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))\n      lien.download = 'releve_temporisations.csv'\n      lien.click()\n      URL.revokeObjectURL(lien.href)\n    }\n  }\n}\n</script>\n\n<style scoped>\n.releve { font-family: 'Segoe UI', Roboto, Arial, sans-serif; }\n.titre { font-weight: 600; font-size: 14px; margin: 6px 0 8px; color: #37474f; text-transform: uppercase; letter-spacing: 0.03em; }\n.tableau { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }\n.tableau th { background: #37474f; color: #fff; text-align: left; padding: 6px 8px; font-weight: 600; }\n.tableau td { padding: 5px 8px; border-bottom: 1px solid #e0e4e8; }\n.tableau tbody tr:nth-child(even) { background: #f5f7f9; }\n.fort { font-weight: bold; }\n.mono { font-family: monospace; }\n.vide { color: #607d8b; font-style: italic; }\n.ecart-ok { color: #2e7d32; }\n.ecart-ko { color: #c62828; font-weight: bold; }\n.note { font-size: 12px; color: #455a64; background: #eceff1; padding: 8px 10px; border-radius: 4px; margin-bottom: 14px; line-height: 1.5; }\n.entete-historique { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }\n.boutons { display: flex; gap: 8px; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "fn_commandes"
+            ]
+        ]
+    },
+    {
+        "id": "tpl_reglages",
+        "type": "ui-template",
+        "z": "onglet_ihm",
+        "group": "grp_reglages",
+        "page": "",
+        "ui": "",
+        "name": "Réglages",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div v-if=\"etat\" class=\"reglages\">\n    <table class=\"tableau\">\n      <thead>\n        <tr>\n          <th>Départ</th>\n          <th v-for=\"c in champs\" :key=\"c.cle\">{{ c.nom }}<div class=\"plage\">{{ c.min }} à {{ c.max }} {{ c.unite }}</div></th>\n          <th></th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr v-for=\"(d, n) in etat.departs\" :key=\"n\">\n          <td><b>{{ d.nom }}</b></td>\n          <td v-for=\"c in champs\" :key=\"c.cle\">\n            <input type=\"number\" :min=\"c.min\" :max=\"c.max\" :step=\"c.pas\"\n                   v-model.number=\"saisie[n][c.cle]\" @input=\"modifie[n] = true\"\n                   :class=\"{ modifie: modifie[n] && saisie[n][c.cle] !== d.reglages[c.cle], invalide: horsPlage(n, c) }\" />\n            <div class=\"en-vigueur\">en vigueur : {{ d.reglages[c.cle] }} {{ c.unite }}</div>\n          </td>\n          <td class=\"actions\">\n            <v-btn size=\"small\" color=\"primary\" :disabled=\"!modifie[n]\" @click=\"appliquer(n)\">Appliquer</v-btn>\n            <v-btn size=\"small\" variant=\"text\" :disabled=\"!modifie[n]\" @click=\"modifie[n] = false\">Annuler</v-btn>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"note\">\n      Protections à temps constant : <b>I&gt;</b> (ANSI 51) sur les courants de phase L1, L2, L3 et\n      <b>Io&gt;</b> (ANSI 51N) sur le courant résiduel. Les réglages sont envoyés à l'automate en Modbus\n      (fonction 16) et pris en compte au cycle suivant. Une valeur hors plage est ramenée dans la plage par l'automate.\n    </div>\n  </div>\n  <div v-else class=\"note\">En attente des données de l'automate...</div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      saisie: [{}, {}, {}],\n      modifie: [false, false, false],\n      champs: [\n        { cle: 'seuilPhase', nom: 'Seuil I>', unite: 'A', min: 50, max: 8000, pas: 10 },\n        { cle: 'tempoPhase', nom: 'Tempo I>', unite: 'ms', min: 0, max: 10000, pas: 10 },\n        { cle: 'seuilTerre', nom: 'Seuil Io>', unite: 'A', min: 5, max: 1000, pas: 1 },\n        { cle: 'tempoTerre', nom: 'Tempo Io>', unite: 'ms', min: 0, max: 10000, pas: 10 },\n      ]\n    }\n  },\n  computed: {\n    etat() { return this.msg && this.msg.payload }\n  },\n  watch: {\n    // Tant qu'un départ n'est pas en cours de modification, on affiche les valeurs de l'automate\n    msg() {\n      if (!this.etat) return\n      this.etat.departs.forEach((d, n) => {\n        if (!this.modifie[n]) this.saisie[n] = Object.assign({}, d.reglages)\n      })\n    }\n  },\n  methods: {\n    horsPlage(n, c) { const v = this.saisie[n][c.cle]; return typeof v !== 'number' || v < c.min || v > c.max },\n    appliquer(n) {\n      const s = this.saisie[n]\n      this.send({ payload: { commande: 'reglages', bloc: n + 1, valeurs: [s.seuilPhase, s.tempoPhase, s.seuilTerre, s.tempoTerre] } })\n      this.modifie[n] = false\n    }\n  }\n}\n</script>\n\n<style scoped>\n.reglages { font-family: 'Segoe UI', Roboto, Arial, sans-serif; }\n.tableau { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 10px; }\n.tableau th { background: #37474f; color: #fff; text-align: left; padding: 6px 8px; font-weight: 600; }\n.plage { font-weight: normal; font-size: 11px; opacity: 0.8; }\n.tableau td { padding: 6px 8px; border-bottom: 1px solid #e0e4e8; vertical-align: top; }\ninput { width: 100px; padding: 4px 6px; border: 1px solid #b0b6bd; border-radius: 3px; font-family: monospace; font-size: 14px; background: #fff; }\ninput.modifie { border-color: #1565c0; background: #e3f2fd; }\ninput.invalide { border-color: #c62828; background: #ffebee; }\n.en-vigueur { font-size: 11px; color: #607d8b; margin-top: 2px; }\n.actions { white-space: nowrap; }\n.note { font-size: 12px; color: #455a64; background: #eceff1; padding: 8px 10px; border-radius: 4px; line-height: 1.5; }\n</style>\n",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 650,
+        "y": 280,
         "wires": [
             [
                 "fn_commandes"
@@ -382,14 +684,14 @@
         "width": 0,
         "height": 0,
         "head": "",
-        "format": "<template>\n  <div v-if=\"etat\">\n    <p>Injection de défauts francs dans la simulation (l'automate ne lit pas cette zone).</p>\n    <div v-for=\"(d, n) in etat.departs\" :key=\"n\" class=\"ligne\">\n      <span class=\"etiquette\">{{ d.nom }}</span>\n      <v-btn size=\"small\" :variant=\"d.defautInjecte === 0 ? 'flat' : 'outlined'\" color=\"grey\" @click=\"injecter(n, 0)\">Aucun</v-btn>\n      <v-btn size=\"small\" :variant=\"d.defautInjecte === 1 ? 'flat' : 'outlined'\" color=\"red\" @click=\"injecter(n, 1)\">Défaut phase</v-btn>\n      <v-btn size=\"small\" :variant=\"d.defautInjecte === 2 ? 'flat' : 'outlined'\" color=\"orange\" @click=\"injecter(n, 2)\">Défaut terre</v-btn>\n    </div>\n  </div>\n  <div v-else>En attente des données...</div>\n</template>\n\n<script>\nexport default {\n  computed: {\n    etat() { return this.msg && this.msg.payload }\n  },\n  methods: {\n    // valeur : 0 = aucun défaut, 1 = défaut phase, 2 = défaut terre\n    injecter(depart, valeur) { this.send({ payload: { commande: 'defaut', dj: depart, valeur: valeur } }) }\n  }\n}\n</script>\n\n<style scoped>\n.ligne { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }\n.etiquette { width: 80px; }\n</style>\n",
+        "format": "<template>\n  <div v-if=\"etat\" class=\"banc\">\n    <div class=\"note\">\n      Construisez un <b>défaut franc</b> : choisissez les phases touchées et, si besoin, leur mise à la terre, puis appliquez-le.\n      Le banc écrit dans la zone « banc de test » que seule la simulation lit ; l'automate ne voit que les courants qui en résultent.\n    </div>\n    <div class=\"cartes\">\n      <div v-for=\"(d, n) in etat.departs\" :key=\"n\" :class=\"['carte', { active: d.defautInjecte }]\">\n        <div class=\"entete\">\n          <b>{{ d.nom }}</b>\n          <span :class=\"['statut', d.defautInjecte ? 'on' : '']\">{{ d.defautInjecte ? 'Défaut appliqué : ' + libelle(d.defautInjecte) : 'Aucun défaut appliqué' }}</span>\n        </div>\n        <div class=\"choix\">\n          <button v-for=\"o in options\" :key=\"o.bit\" :class=\"['bascule', o.terre ? 'terre' : '', { on: choix[n] & o.bit }]\" @click=\"basculer(n, o.bit)\">{{ o.nom }}</button>\n        </div>\n        <div class=\"prepare\">Défaut préparé : <b>{{ libelle(choix[n]) }}</b></div>\n        <div v-if=\"choix[n] && type(choix[n]) === 'aucun'\" class=\"attention\">Une phase seule sans terre ne constitue pas un défaut.</div>\n        <div class=\"boutons\">\n          <v-btn size=\"small\" color=\"red-darken-2\" :disabled=\"type(choix[n]) === 'aucun'\" @click=\"appliquer(n, choix[n])\">Appliquer</v-btn>\n          <v-btn size=\"small\" variant=\"outlined\" :disabled=\"!d.defautInjecte\" @click=\"appliquer(n, 0)\">Supprimer</v-btn>\n        </div>\n      </div>\n    </div>\n    <v-btn class=\"tout\" variant=\"outlined\" color=\"red-darken-2\" @click=\"toutSupprimer\">Supprimer tous les défauts</v-btn>\n\n    <table class=\"tableau\">\n      <thead><tr><th>Défaut</th><th>Phases</th><th>Effet simulé (défaut franc)</th><th>Protection attendue</th></tr></thead>\n      <tbody>\n        <tr><td>Monophasé terre</td><td>1 phase + Terre</td><td>Io = 300 A (limité par la résistance de neutre), phase + 300 A</td><td>Io&gt; seule</td></tr>\n        <tr><td>Biphasé isolé</td><td>2 phases</td><td>2 phases à Icc2 = 0,866 × Icc3 ≈ 3460 A, creux de tension</td><td>I&gt;</td></tr>\n        <tr><td>Biphasé terre</td><td>2 phases + Terre</td><td>Icc2 sur 2 phases et Io = 300 A, creux de tension</td><td>I&gt; et Io&gt; (la plus rapide)</td></tr>\n        <tr><td>Triphasé</td><td>L1-L2-L3</td><td>Icc3 = 4000 A sur les 3 phases, Io ≈ 0, creux de tension</td><td>I&gt;</td></tr>\n      </tbody>\n    </table>\n  </div>\n  <div v-else class=\"note\">En attente des données...</div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      choix: [0, 0, 0],\n      options: [\n        { nom: 'L1', bit: 1 }, { nom: 'L2', bit: 2 }, { nom: 'L3', bit: 4 }, { nom: 'Terre', bit: 8, terre: true }\n      ]\n    }\n  },\n  computed: {\n    etat() { return this.msg && this.msg.payload }\n  },\n  methods: {\n    basculer(n, bit) { this.choix[n] = this.choix[n] ^ bit },\n    // Même règle que type_defaut() dans simulation.py\n    type(bits) {\n      const nb = [1, 2, 4].filter(b => bits & b).length\n      const terre = (bits & 8) !== 0\n      if (nb === 3) return 'triphasé'\n      if (nb === 2) return terre ? 'biphasé terre' : 'biphasé isolé'\n      if (nb === 1 && terre) return 'monophasé terre'\n      return 'aucun'\n    },\n    libelle(bits) {\n      if (!bits) return 'aucun'\n      const p = this.options.filter(o => bits & o.bit).map(o => o.nom).join('-')\n      return this.type(bits) + ' (' + p + ')'\n    },\n    appliquer(n, valeur) { this.send({ payload: { commande: 'defaut', bloc: n + 1, valeur: valeur } }) },\n    toutSupprimer() { [0, 1, 2].forEach(n => this.appliquer(n, 0)) }\n  }\n}\n</script>\n\n<style scoped>\n.banc { font-family: 'Segoe UI', Roboto, Arial, sans-serif; }\n.note { font-size: 13px; color: #455a64; background: #eceff1; padding: 8px 10px; border-radius: 4px; margin-bottom: 12px; line-height: 1.5; }\n.cartes { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }\n.carte { flex: 1 1 260px; border: 1px solid #cfd4da; border-radius: 4px; padding: 10px; background: #fafbfc; }\n.carte.active { border-color: #c62828; box-shadow: 0 0 0 1px #c62828 inset; }\n.entete { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }\n.statut { font-size: 12px; color: #607d8b; }\n.statut.on { color: #b71c1c; font-weight: bold; }\n.choix { display: flex; gap: 6px; margin-bottom: 8px; }\n.bascule { min-width: 54px; padding: 6px 10px; border: 2px solid #90a4ae; border-radius: 4px; background: #fff; font-weight: 600; cursor: pointer; color: #37474f; }\n.bascule.on { background: #37474f; border-color: #37474f; color: #fff; }\n.bascule.terre.on { background: #6d4c41; border-color: #6d4c41; }\n.prepare { font-size: 13px; margin-bottom: 6px; }\n.attention { font-size: 12px; color: #e65100; margin-bottom: 6px; }\n.boutons { display: flex; gap: 8px; }\n.tout { margin-bottom: 14px; }\n.tableau { width: 100%; border-collapse: collapse; font-size: 13px; }\n.tableau th { background: #37474f; color: #fff; text-align: left; padding: 6px 8px; font-weight: 600; }\n.tableau td { padding: 5px 8px; border-bottom: 1px solid #e0e4e8; }\n</style>\n",
         "storeOutMessages": true,
         "passthru": false,
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 640,
-        "y": 220,
+        "x": 650,
+        "y": 320,
         "wires": [
             [
                 "fn_commandes"
@@ -397,167 +699,19 @@
         ]
     },
     {
-        "id": "courbe_i",
-        "type": "ui-chart",
-        "z": "onglet_ihm",
-        "group": "grp_courbes",
-        "name": "Courant de phase des départs (A)",
-        "label": "Courant de phase des départs (A)",
-        "order": 1,
-        "chartType": "line",
-        "category": "topic",
-        "categoryType": "msg",
-        "xAxisLabel": "",
-        "xAxisProperty": "",
-        "xAxisPropertyType": "timestamp",
-        "xAxisType": "time",
-        "xAxisFormat": "",
-        "xAxisFormatType": "auto",
-        "xmin": "",
-        "xmax": "",
-        "yAxisLabel": "A",
-        "yAxisProperty": "payload",
-        "yAxisPropertyType": "msg",
-        "ymin": "",
-        "ymax": "",
-        "bins": 10,
-        "action": "append",
-        "stackSeries": false,
-        "pointShape": "false",
-        "pointRadius": 0,
-        "showLegend": true,
-        "removeOlder": "2",
-        "removeOlderUnit": "60",
-        "removeOlderPoints": "",
-        "colors": [
-            "#1f77b4",
-            "#ff7f0e",
-            "#2ca02c",
-            "#d62728",
-            "#9467bd",
-            "#8c564b",
-            "#e377c2",
-            "#7f7f7f",
-            "#bcbd22"
-        ],
-        "textColor": [
-            "#666666"
-        ],
-        "textColorDefault": true,
-        "gridColor": [
-            "#e5e5e5"
-        ],
-        "gridColorDefault": true,
-        "width": 6,
-        "height": 4,
-        "className": "",
-        "interpolation": "linear",
-        "x": 680,
-        "y": 260,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "courbe_io",
-        "type": "ui-chart",
-        "z": "onglet_ihm",
-        "group": "grp_courbes",
-        "name": "Courant résiduel Io des départs (A)",
-        "label": "Courant résiduel Io des départs (A)",
-        "order": 2,
-        "chartType": "line",
-        "category": "topic",
-        "categoryType": "msg",
-        "xAxisLabel": "",
-        "xAxisProperty": "",
-        "xAxisPropertyType": "timestamp",
-        "xAxisType": "time",
-        "xAxisFormat": "",
-        "xAxisFormatType": "auto",
-        "xmin": "",
-        "xmax": "",
-        "yAxisLabel": "A",
-        "yAxisProperty": "payload",
-        "yAxisPropertyType": "msg",
-        "ymin": "",
-        "ymax": "",
-        "bins": 10,
-        "action": "append",
-        "stackSeries": false,
-        "pointShape": "false",
-        "pointRadius": 0,
-        "showLegend": true,
-        "removeOlder": "2",
-        "removeOlderUnit": "60",
-        "removeOlderPoints": "",
-        "colors": [
-            "#1f77b4",
-            "#ff7f0e",
-            "#2ca02c",
-            "#d62728",
-            "#9467bd",
-            "#8c564b",
-            "#e377c2",
-            "#7f7f7f",
-            "#bcbd22"
-        ],
-        "textColor": [
-            "#666666"
-        ],
-        "textColorDefault": true,
-        "gridColor": [
-            "#e5e5e5"
-        ],
-        "gridColorDefault": true,
-        "width": 6,
-        "height": 4,
-        "className": "",
-        "interpolation": "linear",
-        "x": 680,
-        "y": 300,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "tpl_journal",
-        "type": "ui-template",
-        "z": "onglet_ihm",
-        "group": "grp_journal",
-        "page": "",
-        "ui": "",
-        "name": "Journal",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "head": "",
-        "format": "<template>\n  <div class=\"journal\">\n    <div v-if=\"!msg || !msg.payload || msg.payload.length === 0\">Aucun événement.</div>\n    <div v-else v-for=\"(ligne, i) in msg.payload\" :key=\"i\" :class=\"ligne.includes('DÉCLENCHEMENT') ? 'decl' : ''\">{{ ligne }}</div>\n  </div>\n</template>\n\n<style scoped>\n.journal { max-height: 260px; overflow-y: auto; font-family: monospace; font-size: 13px; }\n.decl { color: #c62828; font-weight: bold; }\n</style>\n",
-        "storeOutMessages": true,
-        "passthru": false,
-        "resendOnRefresh": true,
-        "templateScope": "local",
-        "className": "",
-        "x": 630,
-        "y": 340,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "fn_commandes",
         "type": "function",
         "z": "onglet_ihm",
         "name": "Commande -> Modbus",
-        "func": "// Transforme une commande de l'IHM en écriture Modbus.\n// msg.payload = { commande: 'ouvrir' | 'fermer' | 'acquitter' | 'defaut', dj: 0..3, valeur }\n// dj : 0, 1, 2 = départs 1 à 3 ; 3 = arrivée\nconst a = global.get('adr');\nconst c = msg.payload;\nlet fc, adresse, valeur;\n\nif (c.commande === 'ouvrir') {\n    fc = 5; adresse = a.CO_ACR_OUVERTURE + c.dj; valeur = true;\n} else if (c.commande === 'fermer') {\n    fc = 5; adresse = a.CO_ACR_FERMETURE + c.dj; valeur = true;\n} else if (c.commande === 'acquitter') {\n    fc = 5; adresse = a.CO_ACR_ACQUITTEMENT; valeur = true;\n} else if (c.commande === 'defaut') {\n    fc = 6; adresse = a.HR_DEFAUT_INJECTE + c.dj; valeur = c.valeur;\n} else {\n    return null;\n}\n\n// fc 5 = écrire 1 coil, fc 6 = écrire 1 holding register\nmsg.payload = { value: valeur, fc: fc, unitid: 1, address: adresse, quantity: 1 };\nreturn msg;\n",
+        "func": "// Transforme une commande de l'IHM en écriture Modbus dans l'automate.\n// msg.payload = { commande, bloc, valeur(s) }  (bloc 0 = arrivée, 1 à 3 = départs)\nconst a = global.get('adr');\nconst c = msg.payload;\nconst adr = (bloc, decalage) => a.BLOC * bloc + decalage;\nconst entier = v => Math.max(0, Math.min(65535, Math.round(Number(v) || 0)));\n\n// Commandes internes à l'IHM (pas de Modbus)\nif (c.commande === 'effacerJournal') { flow.set('journal', []); return null; }\nif (c.commande === 'effacerHistorique') { flow.set('historique', []); return null; }\n\nlet ecriture;\nswitch (c.commande) {\n    case 'ouvrir':      // fc 5 = écrire 1 coil\n        ecriture = { fc: 5, address: adr(c.bloc, a.CO_ACR_OUVERTURE), value: true, quantity: 1 };\n        break;\n    case 'fermer':\n        ecriture = { fc: 5, address: adr(c.bloc, a.CO_ACR_FERMETURE), value: true, quantity: 1 };\n        break;\n    case 'acquitter':\n        ecriture = { fc: 5, address: adr(0, a.CO_ACR_ACQUITTEMENT), value: true, quantity: 1 };\n        break;\n    case 'defaut':      // fc 6 = écrire 1 holding register\n        ecriture = { fc: 6, address: adr(c.bloc, a.HR_DEFAUT_INJECTE), value: entier(c.valeur), quantity: 1 };\n        break;\n    case 'reglages':    // fc 16 = écrire plusieurs holding registers\n        ecriture = { fc: 16, address: adr(c.bloc, a.HR_REGLAGE_SEUIL_PHASE), value: c.valeurs.map(entier), quantity: 4 };\n        break;\n    default:\n        return null;\n}\necriture.unitid = 1;\nmsg.payload = ecriture;\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 880,
-        "y": 200,
+        "x": 930,
+        "y": 240,
         "wires": [
             [
                 "ecrire"
@@ -577,8 +731,8 @@
         "keepMsgProperties": false,
         "delayOnStart": false,
         "startDelayTime": "",
-        "x": 1100,
-        "y": 200,
+        "x": 1160,
+        "y": 240,
         "wires": [
             [],
             []

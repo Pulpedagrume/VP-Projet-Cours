@@ -6,42 +6,76 @@ indifférent (1 conseillé). Adresses en **base 0**.
 Source unique dans le code Python : [`src/demirame/mapping.py`](../src/demirame/mapping.py).
 Côté Node-RED, la même table est recopiée dans le nœud « Table des adresses ».
 
-Indices des disjoncteurs : **0 = départ 1, 1 = départ 2, 2 = départ 3, 3 = arrivée**.
+## Organisation en blocs
+
+Chaque cellule du poste occupe un bloc de **20 adresses**, dans les coils
+comme dans les registres :
+
+| Bloc | Cellule | Adresses |
+|---|---|---|
+| 0 | Arrivée + informations générales | 0 – 19 |
+| 1 | Départ 1 | 20 – 39 |
+| 2 | Départ 2 | 40 – 59 |
+| 3 | Départ 3 | 60 – 79 |
+
+**Adresse = 20 × bloc + décalage.** Exemple : tempo I> du départ 2 =
+20 × 2 + 6 = **46**.
 
 ## Pourquoi seulement des coils et des holding registers ?
 
 Un client Modbus ne peut **écrire** que dans les coils et les holding
 registers. Comme la simulation et l'IHM sont des clients, et que le
 programme de l'automate passe lui aussi par un client, toutes les données
-sont dans ces deux zones. Le **sens** de chaque donnée est fixé par sa
-plage d'adresses.
+sont dans ces deux zones. Le **sens** de chaque donnée est fixé par son
+décalage.
 
-## Coils (bits)
+## Coils (bits) : décalage dans le bloc
 
-| Adresse | Variable | Sens | Écrit par |
-|---|---|---|---|
-| 0 – 3 | Position DJ (1 = fermé) | Procédé → automate | Simulation |
-| 10 – 13 | Ordre d'ouverture DJ | Automate → procédé | Automate |
-| 20 – 23 | Ordre de fermeture DJ | Automate → procédé | Automate |
-| 30 – 33 | Demande ACR d'ouverture DJ (impulsion) | IHM → automate | Node-RED (remis à 0 par l'automate) |
-| 40 – 43 | Demande ACR de fermeture DJ (impulsion) | IHM → automate | Node-RED (remis à 0 par l'automate) |
-| 50 | Acquittement ACR (impulsion) | IHM → automate | Node-RED (remis à 0 par l'automate) |
-| 60 – 62 | Seuil phase dépassé, départ 1 – 3 | Automate → IHM | Automate |
-| 70 – 72 | Seuil homopolaire dépassé, départ 1 – 3 | Automate → IHM | Automate |
-| 80 – 82 | Alarme déclenchement phase, départ 1 – 3 | Automate → IHM | Automate |
-| 90 – 92 | Alarme déclenchement homopolaire, départ 1 – 3 | Automate → IHM | Automate |
-| 100 | Voyant alarme générale | Automate → IHM | Automate |
-
-## Holding registers (mots de 16 bits)
-
-| Adresse | Variable | Unité / échelle | Sens | Écrit par |
+| Décalage | Blocs | Variable | Sens | Écrit par |
 |---|---|---|---|---|
-| 0 – 2 | Courant de phase départ 1 – 3 | A | Procédé → automate | Simulation |
-| 3 | Courant arrivée | A | Procédé → automate | Simulation |
-| 4 – 6 | Courant résiduel Io départ 1 – 3 | A | Procédé → automate | Simulation |
-| 7 | Tension jeu de barres | kV × 10 (200 = 20,0 kV) | Procédé → automate | Simulation |
-| 20 | Mot de vie (compteur +1 par cycle) | — | Automate → IHM | Automate |
-| 100 – 102 | Défaut injecté départ 1 – 3 : 0 aucun, 1 phase, 2 terre | code | Banc de test → simulation | Node-RED (page Banc de test) |
+| 0 | tous | Position DJ (1 = fermé) | Procédé → automate | Simulation |
+| 1 | tous | Ordre d'ouverture DJ | Automate → procédé | Automate |
+| 2 | tous | Ordre de fermeture DJ | Automate → procédé | Automate |
+| 3 | tous | Télécommande ACR d'ouverture (impulsion) | IHM → automate | Node-RED, remis à 0 par l'automate |
+| 4 | tous | Télécommande ACR de fermeture (impulsion) | IHM → automate | Node-RED, remis à 0 par l'automate |
+| 5 | 0 | Acquittement ACR (impulsion) | IHM → automate | Node-RED, remis à 0 par l'automate |
+| 6 | 0 | Voyant alarme générale | Automate → IHM | Automate |
+| 10 | départs | Démarrage I> (seuil dépassé, tempo en cours) | Automate → IHM | Automate |
+| 11 | départs | Démarrage Io> | Automate → IHM | Automate |
+| 12 | départs | Alarme mémorisée : déclenchement I> | Automate → IHM | Automate |
+| 13 | départs | Alarme mémorisée : déclenchement Io> | Automate → IHM | Automate |
 
-La zone 100 – 102 représente le « banc de test » de l'instructeur : elle est
-lue par la simulation, **jamais par l'automate**.
+## Holding registers (mots de 16 bits) : décalage dans le bloc
+
+| Décalage | Blocs | Variable | Unité | Sens | Écrit par |
+|---|---|---|---|---|---|
+| 0 | tous | Courant phase L1 | A | Procédé → automate | Simulation |
+| 1 | tous | Courant phase L2 | A | Procédé → automate | Simulation |
+| 2 | tous | Courant phase L3 | A | Procédé → automate | Simulation |
+| 3 | tous | Courant résiduel Io | A | Procédé → automate | Simulation |
+| 4 | 0 | Tension jeu de barres | kV × 10 | Procédé → automate | Simulation |
+| 5 | départs | Réglage seuil I> | A (50 – 8000) | IHM → automate | Node-RED (l'automate écrit les valeurs par défaut et corrige une valeur hors plage) |
+| 6 | départs | Réglage tempo I> | ms (0 – 10000) | IHM → automate | idem |
+| 7 | départs | Réglage seuil Io> | A (5 – 1000) | IHM → automate | idem |
+| 8 | départs | Réglage tempo Io> | ms (0 – 10000) | IHM → automate | idem |
+| 10 | 0 | Mot de vie (+1 par cycle) | — | Automate → IHM | Automate |
+| 11 | 0 | Durée du dernier cycle automate | ms | Automate → IHM | Automate |
+| 10 | départs | Relevé : t protection (apparition → ordre) | ms | Automate → IHM | Automate |
+| 11 | départs | Relevé : t ouverture DJ (ordre → DJ ouvert) | ms | Automate → IHM | Automate |
+| 12 | départs | Relevé : t élimination (apparition → DJ ouvert) | ms | Automate → IHM | Automate |
+| 13 | départs | Relevé : phases vues en défaut | bits (voir ci-dessous) | Automate → IHM | Automate |
+| 14 | départs | Relevé : nombre de déclenchements | — | Automate → IHM | Automate |
+| 15 | départs | **Banc de test** : défaut injecté | bits (voir ci-dessous) | Banc de test → simulation | Node-RED (l'automate ne le lit pas) |
+| 16 | départs | Relevé : protection ayant déclenché | 1 = I>, 2 = Io>, 3 = les deux | Automate → IHM | Automate |
+
+## Codage des phases (décalages 13 et 15)
+
+| Bit | Valeur | Signification |
+|---|---|---|
+| 0 | 1 | Phase L1 |
+| 1 | 2 | Phase L2 |
+| 2 | 4 | Phase L3 |
+| 3 | 8 | Terre |
+
+Exemples : 3 = L1-L2 (biphasé isolé), 11 = L1-L2-Terre (biphasé terre),
+12 = L3-Terre (monophasé terre), 7 = L1-L2-L3 (triphasé).

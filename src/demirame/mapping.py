@@ -3,60 +3,94 @@
 Le serveur Modbus est dans l'automate (plc_main.py). La simulation et
 Node-RED sont des clients qui viennent lire et écrire dans sa mémoire.
 
-Adresses en base 0 (comme dans pymodbus et node-red-contrib-modbus).
-Pour les disjoncteurs (DJ) et les départs, on ajoute l'indice :
-    0 = départ 1, 1 = départ 2, 2 = départ 3, 3 = arrivée.
-Exemple : ordre d'ouverture du DJ départ 2 -> CO_ORDRE_OUVERTURE + 1 = 11.
+ORGANISATION EN BLOCS DE 20 ADRESSES
+------------------------------------
+Chaque cellule du poste a son bloc, dans les coils ET dans les registres :
 
-Le tableau complet est dans docs/mapping_modbus.md.
+    bloc 0 : arrivée + informations générales   adresses  0 à 19
+    bloc 1 : départ 1                             adresses 20 à 39
+    bloc 2 : départ 2                             adresses 40 à 59
+    bloc 3 : départ 3                             adresses 60 à 79
+
+Adresse = 20 x numéro de bloc + décalage.
+Exemple : courant L2 du départ 3 = 20 x 3 + HR_I_L2 = 61.
+
+Les décalages des disjoncteurs (position, ordres, commandes ACR) sont les
+mêmes dans tous les blocs, arrivée comprise.
+
+Adresses en base 0. Le tableau complet est dans docs/mapping_modbus.md.
 """
 
 PORT = 5020                 # port TCP du serveur (502 demande les droits root)
+TAILLE_BLOC = 20
 NB_DEPARTS = 3
-NB_DJ = 4                   # 3 départs + 1 arrivée
-ARRIVEE = 3                 # indice de l'arrivée dans les tableaux de DJ
+NB_BLOCS = 4                # arrivée + 3 départs
+BLOC_ARRIVEE = 0
+BLOCS_DEPARTS = [1, 2, 3]
+NB_ADRESSES = TAILLE_BLOC * NB_BLOCS   # 80 coils et 80 registres
+
+
+def adresse(bloc, decalage):
+    """Adresse Modbus d'une variable : bloc 0 = arrivée, 1 à 3 = départs."""
+    return TAILLE_BLOC * bloc + decalage
+
 
 # ---------------------------------------------------------------------------
-# COILS (bits)
+# COILS (bits) : décalages dans chaque bloc
 # ---------------------------------------------------------------------------
-# Simulation -> automate
-CO_POSITION_DJ = 0              # 0..3   position DJ (1 = fermé)
-# Automate -> simulation
-CO_ORDRE_OUVERTURE = 10         # 10..13 ordre d'ouverture DJ
-CO_ORDRE_FERMETURE = 20         # 20..23 ordre de fermeture DJ
-# IHM (ACR) -> automate : impulsions, remises à 0 par l'automate
-CO_ACR_OUVERTURE = 30           # 30..33 demande d'ouverture DJ
-CO_ACR_FERMETURE = 40           # 40..43 demande de fermeture DJ
-CO_ACR_ACQUITTEMENT = 50        # 50     acquittement des alarmes
-# Automate -> IHM : états et alarmes
-CO_SEUIL_PHASE = 60             # 60..62 seuil phase dépassé (tempo en cours)
-CO_SEUIL_HOMOPOLAIRE = 70       # 70..72 seuil homopolaire dépassé
-CO_DECLENCHEMENT_PHASE = 80     # 80..82 alarme : déclenché sur défaut phase
-CO_DECLENCHEMENT_HOMOPOLAIRE = 90  # 90..92 alarme : déclenché sur défaut terre
-CO_VOYANT_ALARME = 100          # 100    au moins une alarme active
-
-NB_COILS = 101                  # nombre de coils à lire pour tout avoir
+# Disjoncteur (tous les blocs)
+CO_POSITION_DJ = 0          # 1 = fermé                         simulation -> automate
+CO_ORDRE_OUVERTURE = 1      # ordre à la bobine d'ouverture      automate -> simulation
+CO_ORDRE_FERMETURE = 2      # ordre à la bobine de fermeture     automate -> simulation
+CO_ACR_OUVERTURE = 3        # télécommande ACR (impulsion)       IHM -> automate
+CO_ACR_FERMETURE = 4        # télécommande ACR (impulsion)       IHM -> automate
+# Général (bloc 0 seulement)
+CO_ACR_ACQUITTEMENT = 5     # acquittement (impulsion)           IHM -> automate
+CO_VOYANT_ALARME = 6        # au moins une alarme mémorisée      automate -> IHM
+# Protections (blocs départs)
+CO_DEMARRAGE_PHASE = 10     # I > seuil : temporisation en cours automate -> IHM
+CO_DEMARRAGE_TERRE = 11     # Io > seuil : temporisation en cours
+CO_DECLENCHEMENT_PHASE = 12  # alarme mémorisée : déclenché par I>
+CO_DECLENCHEMENT_TERRE = 13  # alarme mémorisée : déclenché par Io>
 
 # ---------------------------------------------------------------------------
-# HOLDING REGISTERS (mots de 16 bits, entiers de 0 à 65535)
+# HOLDING REGISTERS (mots de 16 bits) : décalages dans chaque bloc
 # ---------------------------------------------------------------------------
-# Simulation -> automate : mesures
-HR_COURANT_DEPART = 0           # 0..2   courant de phase départ (A)
-HR_COURANT_ARRIVEE = 3          # 3      courant arrivée (A)
-HR_COURANT_RESIDUEL = 4         # 4..6   courant résiduel Io départ (A)
-HR_TENSION_BARRE = 7            # 7      tension barre en kV x 10 (200 = 20,0 kV)
-NB_MESURES = 8
-# Automate -> IHM
-HR_COMPTEUR_VIE = 20            # 20     +1 à chaque cycle : l'automate tourne
-# IHM (banc de test) -> simulation : défaut injecté (l'automate l'ignore)
-HR_DEFAUT_INJECTE = 100         # 100..102 : 0 = aucun, 1 = phase, 2 = terre
+# Mesures (tous les blocs)                                        simulation -> automate
+HR_I_L1 = 0                 # courant phase L1 (A)
+HR_I_L2 = 1                 # courant phase L2 (A)
+HR_I_L3 = 2                 # courant phase L3 (A)
+HR_IO = 3                   # courant résiduel Io (A)
+# Général (bloc 0 seulement)
+HR_TENSION_BARRE = 4        # kV x 10 (200 = 20,0 kV)            simulation -> automate
+HR_MOT_DE_VIE = 10          # +1 à chaque cycle                  automate -> IHM
+HR_DUREE_CYCLE = 11         # durée du dernier cycle (ms)        automate -> IHM
+# Réglages des protections (blocs départs)                        IHM -> automate
+HR_REGLAGE_SEUIL_PHASE = 5  # seuil I> (A)
+HR_REGLAGE_TEMPO_PHASE = 6  # temporisation I> (ms)
+HR_REGLAGE_SEUIL_TERRE = 7  # seuil Io> (A)
+HR_REGLAGE_TEMPO_TERRE = 8  # temporisation Io> (ms)
+# Relevé du dernier déclenchement (blocs départs)                 automate -> IHM
+HR_TEMPS_PROTECTION = 10    # apparition du défaut -> ordre de déclenchement (ms)
+HR_TEMPS_OUVERTURE_DJ = 11  # ordre de déclenchement -> DJ ouvert (ms)
+HR_TEMPS_ELIMINATION = 12   # apparition du défaut -> DJ ouvert (ms)
+HR_PHASES_DEFAUT = 13       # phases vues en défaut (bits, voir ci-dessous)
+HR_NB_DECLENCHEMENTS = 14   # compteur de déclenchements
+HR_ORIGINE_DECLENCHEMENT = 16  # protection qui a déclenché : 1 = I>, 2 = Io>, 3 = les deux
+# Banc de test (blocs départs)                                    IHM -> simulation
+HR_DEFAUT_INJECTE = 15      # défaut appliqué (bits, voir ci-dessous) - l'automate ne le lit pas
 
-NB_REGISTRES = 103
+# ---------------------------------------------------------------------------
+# Codage des phases en défaut (HR_PHASES_DEFAUT et HR_DEFAUT_INJECTE)
+# ---------------------------------------------------------------------------
+BIT_L1 = 1
+BIT_L2 = 2
+BIT_L3 = 4
+BIT_TERRE = 8
+BITS_PHASES = [BIT_L1, BIT_L2, BIT_L3]
 
-# Codes des défauts injectés
-AUCUN_DEFAUT = 0
-DEFAUT_PHASE = 1
-DEFAUT_TERRE = 2
+# Codage de HR_ORIGINE_DECLENCHEMENT
+ORIGINE_PHASE = 1           # I>  (ANSI 51)
+ORIGINE_TERRE = 2           # Io> (ANSI 51N)
 
-# Échelle de la tension
-ECHELLE_TENSION = 10            # valeur Modbus = kV x 10
+ECHELLE_TENSION = 10        # valeur Modbus = kV x 10
